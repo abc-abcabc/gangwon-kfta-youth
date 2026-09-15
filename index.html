@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강원교총 2030청년위원회</title>
+<meta name="description" content="강원특별자치도교원단체총연합회 2030청년위원회 공식 협업 플랫폼. 공지사항, 일정관리, 프로젝트, 회의록, 멤버 소개, 투표 기능을 제공합니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1a56db;
+  --primary-active: #1342b0;
+  --primary-disabled: #a8c0f0;
+  --primary-light: #eff4ff;
+  --primary-mid: #dbeafe;
+  --canvas: #ffffff;
+  --surface-soft: #f8f9fb;
+  --surface-strong: #eef0f3;
+  --surface-dark: #0a0b0d;
+  --surface-dark-elevated: #16181c;
+  --hairline: #e4e7ed;
+  --hairline-soft: #f0f2f5;
+  --ink: #0a0b0d;
+  --body: #4b5162;
+  --body-strong: #1a1d27;
+  --muted: #7c828e;
+  --muted-soft: #a8acb8;
+  --on-primary: #ffffff;
+  --on-dark: #ffffff;
+  --on-dark-soft: #a8acb3;
+  --semantic-up: #059669;
+  --semantic-down: #dc2626;
+  --semantic-warning: #d97706;
+  --shadow-card: 0 0 0 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-hover: 0 0 0 1px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.10), 0 12px 32px rgba(0,0,0,0.10);
+  --rounded-xs: 4px; --rounded-sm: 8px; --rounded-md: 12px; --rounded-lg: 16px;
+  --rounded-xl: 20px; --rounded-2xl: 24px; --rounded-pill: 100px; --rounded-full: 9999px;
+  --space-xxs: 4px; --space-xs: 8px; --space-sm: 12px; --space-base: 16px;
+  --space-md: 20px; --space-lg: 24px; --space-xl: 32px; --space-xxl: 48px; --space-section: 64px;
+  --font-display: 'Inter', -apple-system, system-ui, sans-serif;
+  --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sidebar-width: 240px;
+  --topbar-height: 60px;
+  --bottom-nav-height: 60px;
+  --transition-fast: 0.15s cubic-bezier(0.4,0,0.2,1);
+  --transition-base: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);font-size:15px;line-height:1.5;color:var(--ink);background:var(--surface-soft);min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit}
+ul{list-style:none}
+
+/* Layout */
+.app-shell{display:flex;min-height:100vh}
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99;opacity:0;pointer-events:none;transition:opacity var(--transition-base)}
+.sidebar-overlay.open{opacity:1;pointer-events:all}
+.sidebar{width:var(--sidebar-width);height:100vh;position:fixed;top:0;left:0;background:var(--surface-dark);display:flex;flex-direction:column;z-index:100;overflow:hidden}
+.sidebar-header{padding:var(--space-lg) var(--space-base);border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.sidebar-brand{display:flex;align-items:center;gap:var(--space-sm);color:var(--on-dark)}
+.sidebar-close-btn{display:none;width:32px;height:32px;border-radius:var(--rounded-full);background:rgba(255,255,255,0.1);color:var(--on-dark);font-size:16px;align-items:center;justify-content:center;cursor:pointer;border:none;transition:background var(--transition-fast)}
+.sidebar-close-btn:hover{background:rgba(255,255,255,0.2)}
+
+.brand-text{overflow:hidden}
+.brand-name{font-size:13px;font-weight:700;color:var(--on-dark);line-height:1.2;white-space:nowrap}
+.brand-sub{font-size:11px;color:var(--on-dark-soft);white-space:nowrap}
+.sidebar-nav{flex:1;padding:var(--space-sm) var(--space-xs);overflow-y:auto}
+.nav-section-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--on-dark-soft);padding:var(--space-md) var(--space-sm) var(--space-xs)}
+.nav-item{display:flex;align-items:center;gap:var(--space-sm);padding:10px var(--space-sm);border-radius:var(--rounded-md);cursor:pointer;transition:background var(--transition-fast),color var(--transition-fast);color:var(--on-dark-soft);font-size:14px;font-weight:500;white-space:nowrap;margin-bottom:2px;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.07);color:var(--on-dark)}
+.nav-item.active{background:rgba(26,86,219,0.2);color:#93b4ff}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--primary);border-radius:0 2px 2px 0}
+.nav-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-badge{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:var(--rounded-full);min-width:18px;text-align:center}
+
+.main-content{margin-left:var(--sidebar-width);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:var(--topbar-height);background:var(--canvas);border-bottom:1px solid var(--hairline);display:flex;align-items:center;padding:0 var(--space-xl);gap:var(--space-base);position:sticky;top:0;z-index:50}
+.topbar-menu-btn{display:none;width:38px;height:38px;border-radius:var(--rounded-md);background:var(--surface-strong);color:var(--ink);font-size:20px;align-items:center;justify-content:center;cursor:pointer;border:none;flex-shrink:0;transition:background var(--transition-fast)}
+.topbar-menu-btn:hover{background:var(--hairline)}
+.topbar-title{font-size:17px;font-weight:700;color:var(--ink);flex:1}
+.topbar-actions{display:flex;align-items:center;gap:var(--space-sm)}
+.topbar-date{font-size:13px;color:var(--muted);font-family:var(--font-mono)}
+.page-content{flex:1;padding:var(--space-xl);max-width:1400px;width:100%}
+.page{display:none}
+.page.active{display:block;animation:pageIn 0.25s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Bottom Navigation Bar & FAB */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--bottom-nav-height);background:var(--canvas);border-top:1px solid var(--hairline);z-index:90;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -4px 16px rgba(0,0,0,0.06)}
+.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:100%;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;transition:color var(--transition-fast);position:relative;user-select:none;-webkit-tap-highlight-color:transparent}
+.bottom-nav-item:active{transform:scale(0.94)}
+.bottom-nav-item.active{color:var(--primary);font-weight:700}
+.bottom-nav-icon{font-size:20px;line-height:1}
+.bottom-nav-badge{position:absolute;top:4px;right:calc(50% - 16px);background:var(--semantic-down);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:var(--rounded-full)}
+.fab-btn{display:none;position:fixed;bottom:calc(var(--bottom-nav-height) + 16px + env(safe-area-inset-bottom,0px));right:16px;width:52px;height:52px;border-radius:var(--rounded-full);background:var(--primary);color:#fff;font-size:24px;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(26,86,219,0.4);z-index:85;cursor:pointer;border:none;transition:transform var(--transition-fast)}
+.fab-btn:active{transform:scale(0.9)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:var(--space-xs);font-size:14px;font-weight:600;border-radius:var(--rounded-pill);padding:10px 20px;height:40px;transition:all var(--transition-fast);cursor:pointer;border:none;white-space:nowrap}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover{background:var(--primary-active);box-shadow:0 4px 12px rgba(26,86,219,0.3);transform:translateY(-1px)}
+.btn-secondary{background:var(--surface-strong);color:var(--ink)}
+.btn-secondary:hover{background:var(--hairline)}
+.btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-outline:hover{background:var(--primary-light)}
+.btn-ghost{background:transparent;color:var(--body);padding:8px 12px}
+.btn-ghost:hover{background:var(--surface-strong);color:var(--ink)}
+.btn-danger{background:transparent;color:var(--semantic-down);border:1.5px solid var(--semantic-down)}
+.btn-danger:hover{background:#fef2f2}
+.btn-sm{height:32px;padding:6px 14px;font-size:13px}
+.btn-lg{height:48px;padding:14px 28px;font-size:15px}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:var(--rounded-full);display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* Cards */
+.card{background:var(--canvas);border-radius:var(--rounded-2xl);border:1px solid var(--hairline);padding:var(--space-lg);transition:box-shadow var(--transition-fast)}
+.card:hover{box-shadow:var(--shadow-card)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-base);gap:var(--space-sm);flex-wrap:wrap}
+.card-title{font-size:17px;font-weight:700;color:var(--ink)}
+.card-subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:0.03em;padding:3px 10px;border-radius:var(--rounded-pill);white-space:nowrap}
+.badge-primary{background:var(--primary-mid);color:var(--primary-active)}
+.badge-success{background:#d1fae5;color:#065f46}
+.badge-warning{background:#fef3c7;color:#92400e}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.badge-gray{background:var(--surface-strong);color:var(--muted)}
+
+/* Forms */
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:13px;font-weight:600;color:var(--body-strong)}
+.form-input{height:44px;padding:0 var(--space-base);border:1.5px solid var(--hairline);border-radius:var(--rounded-md);font-size:14px;color:var(--ink);background:var(--canvas);transition:border-color var(--transition-fast),box-shadow var(--transition-fast);outline:none}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,0.12)}
+.form-textarea{min-height:100px;padding:var(--space-sm) var(--space-base);border:1.5px solid var(--hairline);border-radius:var(--rounded-md);font-size:14px;color:var(--ink);background:var(--canvas);resize:vertical;transition:border-color var(--transition-fast);outline:none;font-family:inherit}
+.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,0.12)}
+.form-select{height:44px;padding:0 var(--space-base);border:1.5px solid var(--hairline);border-radius:var(--rounded-md);font-size:14px;color:var(--ink);background:var(--canvas);outline:none;cursor:pointer}
+.form-select:focus{border-color:var(--primary)}
+.form-grid{display:grid;gap:var(--space-base)}
+.form-grid-2{grid-template-columns:1fr 1fr}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:var(--space-base);opacity:0;pointer-events:none;transition:opacity var(--transition-base)}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--canvas);border-radius:var(--rounded-2xl);padding:var(--space-xl);width:100%;max-width:540px;box-shadow:var(--shadow-hover);transform:scale(0.95) translateY(12px);transition:transform var(--transition-base);max-height:90vh;overflow-y:auto}
+.modal-overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-lg)}
+.modal-title{font-size:20px;font-weight:700;color:var(--ink)}
+.modal-close{width:32px;height:32px;border-radius:var(--rounded-full);display:flex;align-items:center;justify-content:center;background:var(--surface-strong);color:var(--muted);font-size:18px;cursor:pointer;transition:all var(--transition-fast);border:none}
+.modal-close:hover{background:var(--hairline);color:var(--ink)}
+.modal-body{display:flex;flex-direction:column;gap:var(--space-base)}
+.modal-footer{display:flex;gap:var(--space-sm);justify-content:flex-end;margin-top:var(--space-lg)}
+
+/* Section header */
+.section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--space-lg);gap:var(--space-base);flex-wrap:wrap}
+.section-title{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-0.3px}
+.section-desc{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* Dashboard hero */
+.dashboard-hero{background:var(--surface-dark);border-radius:var(--rounded-2xl);padding:var(--space-xl) var(--space-xxl);margin-bottom:var(--space-xl);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:var(--space-xl);min-height:160px}
+.dashboard-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(26,86,219,0.25) 0%,transparent 70%);border-radius:50%}
+.dashboard-hero::after{content:'';position:absolute;bottom:-40px;left:30%;width:200px;height:200px;background:radial-gradient(circle,rgba(6,182,212,0.12) 0%,transparent 70%);border-radius:50%}
+.hero-content{position:relative;z-index:1}
+.hero-greeting{font-size:13px;color:var(--on-dark-soft);font-weight:500;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px}
+.hero-title{font-size:26px;font-weight:800;color:var(--on-dark);letter-spacing:-0.5px;line-height:1.25;margin-bottom:var(--space-xs)}
+.hero-sub{font-size:14px;color:var(--on-dark-soft);white-space:nowrap;line-height:1.4}
+.hero-stats{display:flex;gap:var(--space-lg);position:relative;z-index:1}
+.hero-stat{text-align:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:var(--space-base) var(--space-lg);border-radius:var(--rounded-xl);min-width:90px;backdrop-filter:blur(12px)}
+.hero-stat-num{font-size:26px;font-weight:800;color:var(--on-dark);font-family:var(--font-mono);line-height:1.1}
+.hero-stat-label{font-size:11px;color:var(--on-dark-soft);margin-top:4px;font-weight:500}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-base);margin-bottom:var(--space-xl)}
+.stat-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-xl);padding:var(--space-base) var(--space-lg);transition:box-shadow var(--transition-fast);display:flex;flex-direction:column;align-items:center;text-align:center}
+.stat-card:hover{box-shadow:var(--shadow-card)}
+.stat-card-icon{width:40px;height:40px;border-radius:var(--rounded-lg);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:var(--space-sm)}
+.stat-card-value{font-size:28px;font-weight:800;color:var(--ink);font-family:var(--font-mono);line-height:1.1;text-align:center}
+.stat-card-label{font-size:13px;color:var(--muted);margin-top:4px;text-align:center}
+.stat-card-change{font-size:12px;font-weight:600;margin-top:4px;text-align:center}
+
+/* Dashboard cols */
+.dashboard-cols{display:grid;grid-template-columns:1fr 360px;gap:var(--space-xl)}
+
+/* Quick actions */
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-sm);margin-bottom:var(--space-xl)}
+.quick-action{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-xl);padding:var(--space-base);cursor:pointer;transition:all var(--transition-fast);text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--space-xs)}
+.quick-action:hover{border-color:var(--primary);background:var(--primary-light);transform:translateY(-2px);box-shadow:var(--shadow-card)}
+.quick-action-icon{width:44px;height:44px;border-radius:var(--rounded-lg);display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--surface-strong)}
+.quick-action:hover .quick-action-icon{background:var(--primary-mid)}
+.quick-action-label{font-size:13px;font-weight:600;color:var(--body-strong)}
+
+/* Activity */
+.activity-feed{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;align-items:flex-start;gap:var(--space-sm);padding:var(--space-sm) 0;border-bottom:1px solid var(--hairline-soft)}
+.activity-item:last-child{border-bottom:none}
+.activity-avatar{width:32px;height:32px;border-radius:var(--rounded-full);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.activity-text{flex:1;font-size:13px;color:var(--body);line-height:1.5}
+.activity-text strong{color:var(--ink);font-weight:600}
+.activity-time{font-size:11px;color:var(--muted);white-space:nowrap;font-family:var(--font-mono)}
+
+/* Event list */
+.event-list{display:flex;flex-direction:column;gap:var(--space-xs)}
+.event-item{display:flex;align-items:center;gap:var(--space-sm);padding:var(--space-sm);border-radius:var(--rounded-lg);transition:background var(--transition-fast);cursor:pointer}
+.event-item:hover{background:var(--surface-soft)}
+.event-date{width:44px;text-align:center;background:var(--surface-strong);border-radius:var(--rounded-md);padding:6px 4px;flex-shrink:0}
+.event-date-day{font-size:18px;font-weight:800;color:var(--ink);line-height:1;font-family:var(--font-mono)}
+.event-date-month{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.event-info{flex:1;overflow:hidden}
+.event-title{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Filter bar */
+.filter-bar{display:flex;align-items:center;gap:var(--space-xs);margin-bottom:var(--space-lg);flex-wrap:wrap}
+.filter-btn{padding:7px 16px;border-radius:var(--rounded-pill);font-size:13px;font-weight:600;border:1.5px solid var(--hairline);background:var(--canvas);color:var(--muted);cursor:pointer;transition:all var(--transition-fast)}
+.filter-btn:hover{border-color:var(--primary);color:var(--primary)}
+.filter-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+/* Notice list */
+.notice-list{display:flex;flex-direction:column;gap:var(--space-sm)}
+.notice-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-xl);padding:var(--space-base) var(--space-lg);cursor:pointer;transition:all var(--transition-fast);display:flex;align-items:flex-start;gap:var(--space-base)}
+.notice-card:hover{box-shadow:var(--shadow-card);border-color:rgba(26,86,219,0.2);transform:translateX(2px)}
+.notice-card.pinned{border-left:3px solid var(--primary)}
+.notice-icon{width:40px;height:40px;border-radius:var(--rounded-lg);background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.notice-body{flex:1;min-width:0}
+.notice-title-row{display:flex;align-items:center;gap:var(--space-xs);margin-bottom:6px;flex-wrap:wrap}
+.notice-title{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.notice-content{font-size:13px;color:var(--body);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.notice-meta{display:flex;align-items:center;gap:var(--space-base);margin-top:8px}
+.notice-meta-item{font-size:12px;color:var(--muted)}
+.notice-actions{display:flex;align-items:center;gap:var(--space-xs);flex-shrink:0}
+
+/* Calendar */
+.calendar-layout{display:grid;grid-template-columns:1fr 320px;gap:var(--space-xl)}
+.calendar-nav{display:flex;align-items:center;gap:var(--space-base);margin-bottom:var(--space-base)}
+.cal-month-title{font-size:20px;font-weight:800;color:var(--ink);flex:1;letter-spacing:-0.3px}
+.calendar-grid{border:1px solid var(--hairline);border-radius:var(--rounded-xl);overflow:hidden;background:var(--canvas)}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);background:var(--surface-soft);border-bottom:1px solid var(--hairline)}
+.cal-weekday{padding:10px 8px;text-align:center;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em}
+.calendar-days{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:90px;padding:8px;border-right:1px solid var(--hairline-soft);border-bottom:1px solid var(--hairline-soft);cursor:pointer;transition:background var(--transition-fast);position:relative}
+.cal-day:hover{background:var(--surface-soft)}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day-num{font-size:13px;font-weight:600;color:var(--muted);width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;margin-bottom:4px}
+.cal-day.today .cal-day-num{background:var(--primary);color:#fff;font-weight:800}
+.cal-day.current-month .cal-day-num{color:var(--ink)}
+.cal-day.other-month{background:var(--surface-soft)}
+.cal-day.other-month .cal-day-num{color:var(--muted-soft)}
+.cal-event-dot{display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:var(--rounded-xs);margin-bottom:2px;font-size:11px;font-weight:500;color:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.event-sidebar-list{display:flex;flex-direction:column;gap:var(--space-sm)}
+.sidebar-event-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-lg);padding:var(--space-sm) var(--space-base);border-left:3px solid var(--primary)}
+.sidebar-event-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sidebar-event-meta{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+
+/* Kanban */
+.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-base);align-items:start}
+.kanban-col{background:var(--surface-soft);border-radius:var(--rounded-xl);padding:var(--space-base);min-height:400px}
+.kanban-col-header{display:flex;align-items:center;gap:var(--space-xs);margin-bottom:var(--space-base)}
+.kanban-col-title{font-size:14px;font-weight:700;color:var(--ink);flex:1}
+.kanban-col-count{width:24px;height:24px;border-radius:50%;background:var(--surface-strong);color:var(--muted);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.kanban-col-indicator{width:10px;height:10px;border-radius:50%}
+.kanban-cards{display:flex;flex-direction:column;gap:var(--space-xs);min-height:60px}
+.kanban-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-lg);padding:var(--space-sm) var(--space-base);cursor:grab;transition:all var(--transition-fast);position:relative}
+.kanban-card:hover{box-shadow:var(--shadow-card);transform:translateY(-2px)}
+.kanban-card-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.4}
+.kanban-card-meta{display:flex;align-items:center;gap:var(--space-xs);flex-wrap:wrap}
+.kanban-assignee{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.assignee-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.kanban-due{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-left:auto}
+.kanban-due.overdue{color:var(--semantic-down)}
+.kanban-card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity var(--transition-fast)}
+.kanban-card:hover .kanban-card-actions{opacity:1}
+.kanban-action-btn{width:22px;height:22px;border-radius:5px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--surface-strong);color:var(--muted);transition:all var(--transition-fast)}
+.kanban-action-btn:hover{background:var(--primary);color:#fff}
+.kanban-action-btn.del:hover{background:var(--semantic-down);color:#fff}
+.add-task-btn{width:100%;margin-top:var(--space-xs);padding:8px;border-radius:var(--rounded-md);border:1.5px dashed var(--hairline);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--transition-fast)}
+.add-task-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+
+/* Meetings */
+.meetings-layout{display:grid;grid-template-columns:1fr 320px;gap:var(--space-xl)}
+.meeting-list{display:flex;flex-direction:column;gap:var(--space-sm)}
+.meeting-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-xl);padding:var(--space-base) var(--space-lg);cursor:pointer;transition:all var(--transition-fast)}
+.meeting-card:hover{box-shadow:var(--shadow-card);border-color:rgba(26,86,219,0.2)}
+.meeting-card-header{display:flex;align-items:flex-start;gap:var(--space-sm);margin-bottom:var(--space-xs)}
+.meeting-date-block{width:48px;background:var(--primary-light);border-radius:var(--rounded-md);padding:6px 4px;text-align:center;flex-shrink:0}
+.meeting-date-day{font-size:20px;font-weight:800;color:var(--primary);line-height:1;font-family:var(--font-mono)}
+.meeting-date-month{font-size:10px;color:var(--primary-active);font-weight:700;text-transform:uppercase}
+.meeting-info{flex:1}
+.meeting-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.meeting-attendees{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.attendee-chip{background:var(--surface-strong);color:var(--body);font-size:12px;padding:2px 8px;border-radius:var(--rounded-pill)}
+.meeting-agenda{font-size:13px;color:var(--body);line-height:1.6;margin-top:var(--space-xs);padding-top:var(--space-xs);border-top:1px solid var(--hairline-soft)}
+.doc-grid{display:flex;flex-direction:column;gap:var(--space-xs)}
+.doc-item{display:flex;align-items:center;gap:var(--space-sm);padding:var(--space-xs) var(--space-sm);border-radius:var(--rounded-md);cursor:pointer;transition:background var(--transition-fast)}
+.doc-item:hover{background:var(--surface-soft)}
+.doc-icon{width:36px;height:36px;border-radius:var(--rounded-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.doc-name{font-size:13px;font-weight:600;color:var(--ink);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Members */
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--space-base)}
+.member-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-2xl);padding:var(--space-lg);text-align:center;transition:all var(--transition-fast);position:relative;overflow:hidden}
+.member-card::before{content:'';position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(135deg,var(--primary-light),var(--primary-mid))}
+.member-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px)}
+.member-avatar{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:24px auto var(--space-base);position:relative;z-index:1;border:3px solid var(--canvas);box-shadow:var(--shadow-card)}
+.member-name{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.member-role{font-size:13px;font-weight:600;color:var(--primary);margin-bottom:4px}
+.member-school{font-size:13px;color:var(--muted);margin-bottom:var(--space-sm)}
+.member-contact{font-size:13px;color:var(--body);display:flex;align-items:center;justify-content:center;gap:5px;margin-top:var(--space-xs)}
+.member-actions{display:flex;gap:var(--space-xs);justify-content:center;margin-top:var(--space-base);padding-top:var(--space-sm);border-top:1px solid var(--hairline-soft)}
+.org-chart{margin-bottom:var(--space-xl)}
+.org-level{display:flex;justify-content:center;gap:var(--space-base);margin-bottom:var(--space-lg);flex-wrap:wrap}
+.org-node{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-xl);padding:var(--space-sm) var(--space-lg);text-align:center;min-width:120px;transition:all var(--transition-fast);cursor:pointer}
+.org-node:hover{border-color:var(--primary);box-shadow:var(--shadow-card)}
+.org-node.leader{background:var(--primary);border-color:var(--primary);color:#fff}
+.org-node-name{font-size:14px;font-weight:700;color:var(--ink)}
+.org-node.leader .org-node-name{color:#fff}
+.org-node-role{font-size:11px;color:var(--muted);margin-top:2px}
+.org-node.leader .org-node-role{color:rgba(255,255,255,0.75)}
+
+/* Polls */
+.polls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:var(--space-base)}
+.poll-card{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-2xl);padding:var(--space-lg);transition:all var(--transition-fast)}
+.poll-card:hover{box-shadow:var(--shadow-card)}
+.poll-header{margin-bottom:var(--space-base)}
+.poll-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.4}
+.poll-meta{display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap}
+.poll-status-live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--semantic-up)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--semantic-up);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+.poll-options{display:flex;flex-direction:column;gap:var(--space-xs);margin-bottom:var(--space-base)}
+.poll-option{border:1.5px solid var(--hairline);border-radius:var(--rounded-lg);padding:var(--space-sm) var(--space-base);cursor:pointer;transition:all var(--transition-fast);position:relative;overflow:hidden}
+.poll-option:hover:not(.disabled){border-color:var(--primary);background:var(--primary-light)}
+.poll-option.selected{border-color:var(--primary);background:var(--primary-mid)}
+.poll-option.disabled{cursor:default}
+.poll-option-bar{position:absolute;top:0;left:0;bottom:0;background:rgba(26,86,219,0.08);transition:width 0.6s cubic-bezier(0.4,0,0.2,1);z-index:0}
+.poll-option-content{position:relative;z-index:1;display:flex;align-items:center;gap:var(--space-sm)}
+.poll-option-label{font-size:14px;font-weight:500;color:var(--ink);flex:1}
+.poll-option-pct{font-size:13px;font-weight:700;color:var(--primary);font-family:var(--font-mono)}
+.poll-option-votes{font-size:11px;color:var(--muted)}
+.poll-footer{display:flex;align-items:center;justify-content:space-between;padding-top:var(--space-sm);border-top:1px solid var(--hairline-soft);flex-wrap:wrap;gap:var(--space-xs)}
+.poll-total{font-size:12px;color:var(--muted)}
+.poll-deadline{font-size:12px;color:var(--muted);font-family:var(--font-mono)}
+
+/* Utils */
+.flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}
+.justify-between{justify-content:space-between}.gap-xs{gap:var(--space-xs)}.gap-sm{gap:var(--space-sm)}
+.gap-base{gap:var(--space-base)}.gap-lg{gap:var(--space-lg)}
+.mb-sm{margin-bottom:var(--space-sm)}.mb-base{margin-bottom:var(--space-base)}
+.mb-lg{margin-bottom:var(--space-lg)}.mb-xl{margin-bottom:var(--space-xl)}
+.w-full{width:100%}.text-muted{color:var(--muted)}.text-sm{font-size:13px}
+.font-mono{font-family:var(--font-mono)}.text-right{text-align:right}
+.divider{height:1px;background:var(--hairline-soft);margin:var(--space-base) 0}
+.empty-state{text-align:center;padding:var(--space-xxl) var(--space-xl);color:var(--muted)}
+.empty-state-icon{font-size:48px;margin-bottom:var(--space-base)}
+.empty-state-title{font-size:16px;font-weight:700;color:var(--body-strong);margin-bottom:var(--space-xs)}
+.empty-state-desc{font-size:14px}
+
+/* Kanban Tabs & Drag handle */
+.kanban-tabs{display:none;gap:8px;margin-bottom:var(--space-base);overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.kanban-tab-btn{padding:8px 16px;border-radius:var(--rounded-pill);font-size:13px;font-weight:600;border:1.5px solid var(--hairline);background:var(--canvas);color:var(--muted);white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all var(--transition-fast)}
+.kanban-tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.kanban-tab-count{background:rgba(0,0,0,0.08);padding:2px 6px;border-radius:10px;font-size:11px;font-weight:700}
+.kanban-tab-btn.active .kanban-tab-count{background:rgba(255,255,255,0.25);color:#fff}
+.modal-drag-handle{width:36px;height:4px;background:var(--hairline);border-radius:2px;margin:0 auto 14px;display:none}
+
+/* Toast */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--surface-dark);color:var(--on-dark);padding:12px 20px;border-radius:var(--rounded-lg);font-size:14px;font-weight:500;box-shadow:var(--shadow-hover);display:flex;align-items:center;gap:var(--space-sm);pointer-events:all;animation:toastIn 0.35s cubic-bezier(0.4,0,0.2,1);max-width:320px}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.toast-icon{font-size:18px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted-soft)}
+
+/* Responsive */
+@media(max-width:1100px){
+  .dashboard-cols,.calendar-layout,.meetings-layout{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  :root{--sidebar-width:0px}
+  .sidebar{width:270px !important;transform:translateX(-100%);transition:transform var(--transition-base);z-index:100;box-shadow:4px 0 24px rgba(0,0,0,0.3)}
+  .sidebar.mobile-open{transform:translateX(0) !important}
+  .sidebar-header{display:flex;align-items:center;justify-content:space-between}
+  .sidebar-close-btn{display:flex}
+  .main-content{margin-left:0}
+  .topbar-menu-btn{display:flex}
+  .topbar{padding:0 var(--space-base)}
+  .bottom-nav{display:flex;align-items:center;justify-content:space-around}
+  .fab-btn{display:flex}
+  .page-content{padding:var(--space-base);padding-bottom:calc(var(--bottom-nav-height) + 24px + env(safe-area-inset-bottom,0px))}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .kanban-board{grid-template-columns:1fr}
+  .kanban-tabs{display:flex}
+  .toast-container{bottom:calc(var(--bottom-nav-height) + 16px + env(safe-area-inset-bottom,0px));right:16px;left:16px;align-items:center}
+  .toast{max-width:100%}
+}
+@media(max-width:640px){
+  .topbar-date{display:none}
+  .hero-stats{display:none}
+  .hero-sub{display:block;font-size:clamp(10px,2.7vw,13px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+  .dashboard-hero{padding:var(--space-md) var(--space-base)}
+  .hero-title{font-size:20px}
+  .quick-actions{grid-template-columns:repeat(3,1fr);gap:8px}
+  .quick-action{padding:12px 6px}
+  .quick-action-icon{width:38px;height:38px;font-size:18px}
+  .quick-action-label{font-size:11px}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-card{padding:12px 14px}
+  .stat-card-value{font-size:22px}
+  .form-grid-2{grid-template-columns:1fr}
+  .members-grid{grid-template-columns:1fr}
+  .polls-grid{grid-template-columns:1fr}
+  .section-header{flex-direction:column;align-items:stretch;gap:12px}
+  .section-header .btn,.section-header .flex{width:100%;justify-content:center}
+  
+  /* Mobile Bottom Sheet Modal */
+  .modal-overlay{align-items:flex-end;padding:0}
+  .modal-drag-handle{display:block}
+  .modal{border-radius:24px 24px 0 0;max-height:88vh;padding:20px 16px 24px;transform:translateY(100%);transition:transform var(--transition-base)}
+  .modal-overlay.open .modal{transform:translateY(0)}
+  .form-input,.form-select,.form-textarea{font-size:16px}
+  
+  /* Compact Mobile Calendar */
+  .cal-day{min-height:54px;padding:4px 2px}
+  .cal-day-num{font-size:11px;width:22px;height:22px}
+  .cal-event-dot{padding:1px 3px;font-size:9px;margin-bottom:1px}
+  .cal-weekday{padding:6px 2px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileSidebar(false)"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="brand-text">
+          <div class="brand-name">강원교총</div>
+          <div class="brand-sub">2030 청년위원회</div>
+        </div>
+      </div>
+      <button class="sidebar-close-btn" onclick="toggleMobileSidebar(false)" aria-label="메뉴 닫기">✕</button>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">메뉴</div>
+      <div class="nav-item active" onclick="navigate('dashboard')" id="nav-dashboard"><div class="nav-icon">🏠</div><span class="nav-label">대시보드</span></div>
+      <div class="nav-item" onclick="navigate('notices')" id="nav-notices"><div class="nav-icon">📢</div><span class="nav-label">공지사항</span><span class="nav-badge" id="badge-notices">0</span></div>
+      <div class="nav-item" onclick="navigate('calendar')" id="nav-calendar"><div class="nav-icon">📅</div><span class="nav-label">일정/캘린더</span></div>
+      <div class="nav-item" onclick="navigate('kanban')" id="nav-kanban"><div class="nav-icon">✅</div><span class="nav-label">프로젝트 관리</span></div>
+      <div class="nav-item" onclick="navigate('meetings')" id="nav-meetings"><div class="nav-icon">📄</div><span class="nav-label">회의록 &amp; 자료실</span></div>
+      <div class="nav-item" onclick="navigate('members')" id="nav-members"><div class="nav-icon">👥</div><span class="nav-label">멤버 &amp; 조직도</span></div>
+      <div class="nav-item" onclick="navigate('polls')" id="nav-polls"><div class="nav-icon">🗳️</div><span class="nav-label">투표 &amp; 설문</span></div>
+    </nav>
+
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="topbar-menu-btn" onclick="toggleMobileSidebar(true)" aria-label="메뉴 열기">☰</button>
+      <div class="topbar-title" id="topbar-title">대시보드</div>
+      <div class="topbar-actions">
+        <span class="topbar-date" id="current-date"></span>
+        <button class="btn btn-primary btn-sm" onclick="quickAction()">＋ 새 항목</button>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="dashboard-hero">
+          <div class="hero-content">
+            <div class="hero-greeting">안녕하세요 👋</div>
+            <div class="hero-title">강원교총 2030청년위원회</div>
+            <div class="hero-sub">공지사항, 일정, 프로젝트, 회의록, 멤버 관리를 한 곳에서 효율적으로 관리하세요.</div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-num" id="hs-members">0</div><div class="hero-stat-label">전체 멤버</div></div>
+            <div class="hero-stat"><div class="hero-stat-num" id="hs-tasks">0</div><div class="hero-stat-label">진행중 과제</div></div>
+            <div class="hero-stat"><div class="hero-stat-num" id="hs-events">0</div><div class="hero-stat-label">이번달 일정</div></div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-card-icon" style="background:#eff4ff">📢</div><div class="stat-card-value" id="sc-notices">0</div><div class="stat-card-label">공지사항</div><div class="stat-card-change text-muted">전체 게시글</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="background:#f0fdf4">📅</div><div class="stat-card-value" id="sc-events">0</div><div class="stat-card-label">예정 일정</div><div class="stat-card-change" style="color:var(--semantic-up)">이번달</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="background:#fff7ed">✅</div><div class="stat-card-value" id="sc-tasks">0</div><div class="stat-card-label">완료된 과제</div><div class="stat-card-change" style="color:var(--semantic-warning)">총 과제 중</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="background:#fdf4ff">🗳️</div><div class="stat-card-value" id="sc-polls">0</div><div class="stat-card-label">진행중 투표</div><div class="stat-card-change text-muted">활성 투표</div></div>
+        </div>
+        <div style="margin-bottom:12px;font-size:14px;font-weight:700;color:var(--ink)">빠른 실행</div>
+        <div class="quick-actions">
+          <div class="quick-action" onclick="navigate('notices');setTimeout(()=>openNoticeModal(),300)"><div class="quick-action-icon">📢</div><div class="quick-action-label">공지 작성</div></div>
+          <div class="quick-action" onclick="navigate('calendar');setTimeout(()=>openEventModal(),300)"><div class="quick-action-icon">📅</div><div class="quick-action-label">일정 추가</div></div>
+          <div class="quick-action" onclick="navigate('kanban');setTimeout(()=>openTaskModal('todo'),300)"><div class="quick-action-icon">✅</div><div class="quick-action-label">과제 등록</div></div>
+          <div class="quick-action" onclick="navigate('meetings');setTimeout(()=>openMeetingModal(),300)"><div class="quick-action-icon">📄</div><div class="quick-action-label">회의록 작성</div></div>
+          <div class="quick-action" onclick="navigate('members');setTimeout(()=>openMemberModal(),300)"><div class="quick-action-icon">👥</div><div class="quick-action-label">멤버 추가</div></div>
+          <div class="quick-action" onclick="navigate('polls');setTimeout(()=>openPollModal(),300)"><div class="quick-action-icon">🗳️</div><div class="quick-action-label">투표 생성</div></div>
+        </div>
+        <div class="dashboard-cols">
+          <div class="card"><div class="card-header"><div><div class="card-title">최근 활동</div><div class="card-subtitle">위원회 최신 소식</div></div></div><div class="activity-feed" id="activity-feed"></div></div>
+          <div class="card"><div class="card-header"><div><div class="card-title">다가오는 일정</div><div class="card-subtitle">예정된 행사 · 회의</div></div><button class="btn btn-ghost btn-sm" onclick="navigate('calendar')">전체보기</button></div><div class="event-list" id="upcoming-events"></div></div>
+        </div>
+      </div>
+
+      <!-- NOTICES -->
+      <div class="page" id="page-notices">
+        <div class="section-header"><div><div class="section-title">공지사항 &amp; 게시판</div><div class="section-desc">위원회 소식을 공유하세요</div></div><button class="btn btn-primary" onclick="openNoticeModal()">📢 공지 작성</button></div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterNotices(this,'all')">전체</button>
+          <button class="filter-btn" onclick="filterNotices(this,'공지')">📌 공지</button>
+          <button class="filter-btn" onclick="filterNotices(this,'자유')">💬 자유</button>
+          <button class="filter-btn" onclick="filterNotices(this,'건의')">💡 건의</button>
+        </div>
+        <div class="notice-list" id="notice-list"></div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="page" id="page-calendar">
+        <div class="section-header"><div><div class="section-title">일정 &amp; 캘린더</div><div class="section-desc">회의 · 행사 · 연수 일정을 관리하세요</div></div><button class="btn btn-primary" onclick="openEventModal()">📅 일정 추가</button></div>
+        <div class="calendar-layout">
+          <div>
+            <div class="calendar-nav">
+              <button class="btn btn-secondary btn-sm btn-icon" onclick="changeMonth(-1)">◀</button>
+              <div class="cal-month-title" id="cal-month-title"></div>
+              <button class="btn btn-secondary btn-sm btn-icon" onclick="changeMonth(1)">▶</button>
+              <button class="btn btn-ghost btn-sm" onclick="goToday()">오늘</button>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-weekdays">
+                <div class="cal-weekday" style="color:#dc2626">일</div>
+                <div class="cal-weekday">월</div><div class="cal-weekday">화</div><div class="cal-weekday">수</div><div class="cal-weekday">목</div><div class="cal-weekday">금</div>
+                <div class="cal-weekday" style="color:#1a56db">토</div>
+              </div>
+              <div class="calendar-days" id="calendar-days"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">전체 일정</div><span class="badge badge-primary" id="event-count-badge">0</span></div>
+              <div class="event-sidebar-list" id="event-sidebar-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KANBAN -->
+      <div class="page" id="page-kanban">
+        <div class="section-header"><div><div class="section-title">프로젝트 &amp; 과제 관리</div><div class="section-desc">칸반 보드로 진행 상황을 추적하세요</div></div><button class="btn btn-primary" onclick="openTaskModal('todo')">✅ 과제 추가</button></div>
+        <div class="kanban-tabs" id="kanban-tabs">
+          <button class="kanban-tab-btn active" onclick="filterKanbanTab(this,'all')">전체 <span class="kanban-tab-count" id="tab-count-all">0</span></button>
+          <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'todo')">할 일 <span class="kanban-tab-count" id="tab-count-todo">0</span></button>
+          <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'progress')">진행 중 <span class="kanban-tab-count" id="tab-count-progress">0</span></button>
+          <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'done')">완료 <span class="kanban-tab-count" id="tab-count-done">0</span></button>
+        </div>
+        <div class="kanban-board">
+          <div class="kanban-col" id="kcol-todo">
+            <div class="kanban-col-header"><div class="kanban-col-indicator" style="background:#94a3b8"></div><div class="kanban-col-title">할 일</div><div class="kanban-col-count" id="count-todo">0</div></div>
+            <div class="kanban-cards" id="col-todo"></div>
+            <button class="add-task-btn" onclick="openTaskModal('todo')">＋ 과제 추가</button>
+          </div>
+          <div class="kanban-col" id="kcol-progress">
+            <div class="kanban-col-header"><div class="kanban-col-indicator" style="background:#3b82f6"></div><div class="kanban-col-title">진행 중</div><div class="kanban-col-count" id="count-progress">0</div></div>
+            <div class="kanban-cards" id="col-progress"></div>
+            <button class="add-task-btn" onclick="openTaskModal('progress')">＋ 과제 추가</button>
+          </div>
+          <div class="kanban-col" id="kcol-done">
+            <div class="kanban-col-header"><div class="kanban-col-indicator" style="background:#10b981"></div><div class="kanban-col-title">완료</div><div class="kanban-col-count" id="count-done">0</div></div>
+            <div class="kanban-cards" id="col-done"></div>
+            <button class="add-task-btn" onclick="openTaskModal('done')">＋ 완료 추가</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEETINGS -->
+      <div class="page" id="page-meetings">
+        <div class="section-header"><div><div class="section-title">회의록 &amp; 자료실</div><div class="section-desc">회의 내용과 주요 자료를 기록하세요</div></div><div class="flex gap-sm"><button class="btn btn-secondary" onclick="openDocModal()">📎 자료 추가</button><button class="btn btn-primary" onclick="openMeetingModal()">📝 회의록 작성</button></div></div>
+        <div class="meetings-layout">
+          <div>
+            <div style="margin-bottom:var(--space-sm);font-size:14px;font-weight:700;color:var(--ink)">회의록 목록</div>
+            <div class="meeting-list" id="meeting-list"></div>
+          </div>
+          <div>
+            <div class="card"><div class="card-header"><div class="card-title">📁 자료실</div><button class="btn btn-ghost btn-sm" onclick="openDocModal()">＋ 추가</button></div><div class="doc-grid" id="doc-list"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBERS -->
+      <div class="page" id="page-members">
+        <div class="section-header"><div><div class="section-title">멤버 &amp; 조직도</div><div class="section-desc">2030청년위원회 구성원을 소개합니다</div></div><button class="btn btn-primary" onclick="openMemberModal()">👤 멤버 추가</button></div>
+        <div class="card mb-xl" id="org-chart-container"><div class="card-header"><div class="card-title">조직도</div></div><div id="org-chart-view"><div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">멤버를 추가하면 조직도가 표시됩니다</div></div></div></div>
+        <div style="margin-bottom:12px;font-size:14px;font-weight:700;color:var(--ink)">전체 멤버</div>
+        <div class="members-grid" id="members-grid"></div>
+      </div>
+
+      <!-- POLLS -->
+      <div class="page" id="page-polls">
+        <div class="section-header"><div><div class="section-title">투표 &amp; 설문</div><div class="section-desc">위원회 의견을 수렴하세요</div></div><button class="btn btn-primary" onclick="openPollModal()">🗳️ 투표 생성</button></div>
+        <div class="polls-grid" id="polls-grid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bottom-nav-item active" onclick="navigate('dashboard')" id="bnav-dashboard"><div class="bottom-nav-icon">🏠</div><span>홈</span></div>
+  <div class="bottom-nav-item" onclick="navigate('notices')" id="bnav-notices"><div class="bottom-nav-icon">📢</div><span>공지</span><span class="bottom-nav-badge" id="bnav-badge-notices" style="display:none">0</span></div>
+  <div class="bottom-nav-item" onclick="navigate('calendar')" id="bnav-calendar"><div class="bottom-nav-icon">📅</div><span>일정</span></div>
+  <div class="bottom-nav-item" onclick="navigate('kanban')" id="bnav-kanban"><div class="bottom-nav-icon">✅</div><span>과제</span></div>
+  <div class="bottom-nav-item" onclick="navigate('polls')" id="bnav-polls"><div class="bottom-nav-icon">🗳️</div><span>투표</span></div>
+  <div class="bottom-nav-item" onclick="toggleMobileSidebar(true)"><div class="bottom-nav-icon">☰</div><span>메뉴</span></div>
+</nav>
+<button class="fab-btn" onclick="quickAction()" aria-label="새 항목 작성">＋</button>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-notice"><div class="modal"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="modal-notice-title">공지사항 작성</div><button class="modal-close" onclick="closeModal('modal-notice')">✕</button></div>
+  <div class="modal-body">
+    <input type="hidden" id="notice-edit-id" value="">
+    <div class="form-group"><label class="form-label">카테고리</label><select class="form-select" id="notice-category"><option>공지</option><option>자유</option><option>건의</option></select></div>
+    <div class="form-group"><label class="form-label">제목</label><input type="text" class="form-input" id="notice-title" placeholder="공지사항 제목을 입력하세요"></div>
+    <div class="form-group"><label class="form-label">내용</label><textarea class="form-textarea" id="notice-content" placeholder="내용을 입력하세요..." style="min-height:150px"></textarea></div>
+    <div class="form-group"><label class="form-label">작성자</label><input type="text" class="form-input" id="notice-author" placeholder="이름"></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;cursor:pointer"><input type="checkbox" id="notice-pinned"> 상단 고정</label>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-notice')">취소</button><button class="btn btn-primary" id="btn-save-notice" onclick="saveNotice()">공지 등록</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-event"><div class="modal"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="modal-event-title">일정 추가</div><button class="modal-close" onclick="closeModal('modal-event')">✕</button></div>
+  <div class="modal-body">
+    <input type="hidden" id="event-edit-id" value="">
+    <div class="form-group"><label class="form-label">일정 제목</label><input type="text" class="form-input" id="event-title" placeholder="일정 이름"></div>
+    <div class="form-grid form-grid-2">
+      <div class="form-group"><label class="form-label">날짜</label><input type="date" class="form-input" id="event-date"></div>
+      <div class="form-group"><label class="form-label">시간</label><input type="time" class="form-input" id="event-time"></div>
+    </div>
+    <div class="form-group"><label class="form-label">장소</label><input type="text" class="form-input" id="event-place" placeholder="장소 (선택)"></div>
+    <div class="form-group"><label class="form-label">카테고리</label><select class="form-select" id="event-category"><option value="#1a56db">회의</option><option value="#059669">행사</option><option value="#d97706">연수</option><option value="#7c3aed">기타</option></select></div>
+    <div class="form-group"><label class="form-label">메모</label><textarea class="form-textarea" id="event-note" placeholder="메모 (선택)" style="min-height:80px"></textarea></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-event')">취소</button><button class="btn btn-primary" id="btn-save-event" onclick="saveEvent()">일정 등록</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-task"><div class="modal"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="modal-task-title">과제 추가</div><button class="modal-close" onclick="closeModal('modal-task')">✕</button></div>
+  <div class="modal-body">
+    <input type="hidden" id="task-edit-id" value="">
+    <div class="form-group"><label class="form-label">과제 제목</label><input type="text" class="form-input" id="task-title" placeholder="과제 이름"></div>
+    <div class="form-group"><label class="form-label">설명</label><textarea class="form-textarea" id="task-desc" placeholder="과제 설명 (선택)" style="min-height:80px"></textarea></div>
+    <div class="form-grid form-grid-2">
+      <div class="form-group"><label class="form-label">담당자</label><input type="text" class="form-input" id="task-assignee" placeholder="담당자 이름"></div>
+      <div class="form-group"><label class="form-label">마감일</label><input type="date" class="form-input" id="task-due"></div>
+    </div>
+    <div class="form-group"><label class="form-label">우선순위</label><select class="form-select" id="task-priority"><option value="low">낮음</option><option value="mid" selected>보통</option><option value="high">높음</option></select></div>
+    <input type="hidden" id="task-status" value="todo">
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-task')">취소</button><button class="btn btn-primary" id="btn-save-task" onclick="saveTask()">과제 등록</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-meeting"><div class="modal"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="modal-meeting-title">회의록 작성</div><button class="modal-close" onclick="closeModal('modal-meeting')">✕</button></div>
+  <div class="modal-body">
+    <input type="hidden" id="meeting-edit-id" value="">
+    <div class="form-group"><label class="form-label">회의 제목</label><input type="text" class="form-input" id="meeting-title" placeholder="회의 이름"></div>
+    <div class="form-grid form-grid-2">
+      <div class="form-group"><label class="form-label">날짜</label><input type="date" class="form-input" id="meeting-date"></div>
+      <div class="form-group"><label class="form-label">장소</label><input type="text" class="form-input" id="meeting-place" placeholder="회의 장소"></div>
+    </div>
+    <div class="form-group"><label class="form-label">참석자 (쉼표로 구분)</label><input type="text" class="form-input" id="meeting-attendees" placeholder="예: 김교원, 이청년, 박위원"></div>
+    <div class="form-group"><label class="form-label">안건</label><textarea class="form-textarea" id="meeting-agenda" placeholder="회의 안건을 입력하세요" style="min-height:80px"></textarea></div>
+    <div class="form-group"><label class="form-label">결정사항 / 내용</label><textarea class="form-textarea" id="meeting-content" placeholder="주요 결정사항 및 내용" style="min-height:120px"></textarea></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-meeting')">취소</button><button class="btn btn-primary" id="btn-save-meeting" onclick="saveMeeting()">회의록 저장</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-doc"><div class="modal"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="modal-doc-title">자료 추가</div><button class="modal-close" onclick="closeModal('modal-doc')">✕</button></div>
+  <div class="modal-body">
+    <input type="hidden" id="doc-edit-id" value="">
+    <div class="form-group"><label class="form-label">자료 이름</label><input type="text" class="form-input" id="doc-name" placeholder="자료 제목"></div>
+    <div class="form-group"><label class="form-label">카테고리</label><select class="form-select" id="doc-type"><option>📊 발표자료</option><option>📝 보고서</option><option>📋 회의자료</option><option>📰 뉴스/소식</option><option>📁 기타</option></select></div>
+    <div class="form-group"><label class="form-label">설명</label><textarea class="form-textarea" id="doc-desc" placeholder="자료 설명 (선택)" style="min-height:80px"></textarea></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-doc')">취소</button><button class="btn btn-primary" id="btn-save-doc" onclick="saveDoc()">자료 등록</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-member"><div class="modal"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="modal-member-title">멤버 추가</div><button class="modal-close" onclick="closeModal('modal-member')">✕</button></div>
+  <div class="modal-body">
+    <input type="hidden" id="member-edit-id" value="">
+    <div class="form-grid form-grid-2">
+      <div class="form-group"><label class="form-label">이름</label><input type="text" class="form-input" id="member-name" placeholder="이름"></div>
+      <div class="form-group"><label class="form-label">역할</label><select class="form-select" id="member-role"><option>위원장</option><option>부위원장</option><option>총무</option><option>사무국장</option><option>위원</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">소속 학교</label><input type="text" class="form-input" id="member-school" placeholder="소속 학교명"></div>
+    <div class="form-group"><label class="form-label">지역</label><select class="form-select" id="member-region"><option>춘천</option><option>원주</option><option>강릉</option><option>동해</option><option>태백</option><option>속초</option><option>삼척</option><option>홍천</option><option>횡성</option><option>영월</option><option>평창</option><option>정선</option><option>철원</option><option>화천</option><option>양구</option><option>인제</option><option>고성</option><option>양양</option></select></div>
+    <div class="form-group"><label class="form-label">연락처</label><input type="text" class="form-input" id="member-contact" placeholder="010-0000-0000"></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-member')">취소</button><button class="btn btn-primary" id="btn-save-member" onclick="saveMember()">멤버 등록</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-poll"><div class="modal" style="max-width:560px"><div class="modal-drag-handle"></div>
+  <div class="modal-header"><div class="modal-title">투표 생성</div><button class="modal-close" onclick="closeModal('modal-poll')">✕</button></div>
+  <div class="modal-body">
+    <div class="form-group"><label class="form-label">투표 제목</label><input type="text" class="form-input" id="poll-title" placeholder="투표 제목"></div>
+    <div class="form-group">
+      <label class="form-label">선택지</label>
+      <div id="poll-options-input">
+        <input type="text" class="form-input" placeholder="선택지 1" style="margin-bottom:8px">
+        <input type="text" class="form-input" placeholder="선택지 2">
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="addPollOption()" style="margin-top:8px">＋ 선택지 추가</button>
+    </div>
+    <div class="form-grid form-grid-2">
+      <div class="form-group"><label class="form-label">마감일</label><input type="date" class="form-input" id="poll-deadline"></div>
+      <div class="form-group"><label class="form-label">투표 방식</label><select class="form-select" id="poll-type"><option value="single">단일 선택</option><option value="multi">복수 선택</option></select></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-poll')">취소</button><button class="btn btn-primary" onclick="savePoll()">투표 시작</button></div>
+</div></div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const DB={get(k){try{return JSON.parse(localStorage.getItem('gcta_'+k)||'[]')}catch{return[]}},set(k,v){localStorage.setItem('gcta_'+k,JSON.stringify(v))}};
+let currentPage='dashboard',calYear,calMonth,currentFilter='all',currentKanbanTab='all';
+const COLORS=['#1a56db','#059669','#d97706','#7c3aed','#dc2626','#0891b2','#0d9488','#9333ea'];
+
+function toggleMobileSidebar(show){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  if(show){
+    sidebar?.classList.add('mobile-open');
+    overlay?.classList.add('open');
+  }else{
+    sidebar?.classList.remove('mobile-open');
+    overlay?.classList.remove('open');
+  }
+}
+
+function navigate(page){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav-'+page)?.classList.add('active');
+  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('bnav-'+page)?.classList.add('active');
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page)?.classList.add('active');
+  currentPage=page;
+  toggleMobileSidebar(false);
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const titles={dashboard:'대시보드',notices:'공지사항 & 게시판',calendar:'일정 & 캘린더',kanban:'프로젝트 & 과제 관리',meetings:'회의록 & 자료실',members:'멤버 & 조직도',polls:'투표 & 설문'};
+  document.getElementById('topbar-title').textContent=titles[page]||page;
+  if(page==='dashboard')refreshDashboard();
+  if(page==='notices')renderNotices();
+  if(page==='calendar')renderCalendar();
+  if(page==='kanban')renderKanban();
+  if(page==='meetings')renderMeetings();
+  if(page==='members')renderMembers();
+  if(page==='polls')renderPolls();
+}
+
+function quickAction(){
+  const a={dashboard:'modal-notice',notices:'modal-notice',calendar:'modal-event',kanban:'modal-task',meetings:'modal-meeting',members:'modal-member',polls:'modal-poll'};
+  openModal(a[currentPage]||'modal-notice');
+}
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function openNoticeModal(){
+  document.getElementById('notice-edit-id').value='';
+  document.getElementById('modal-notice-title').textContent='공지사항 작성';
+  document.getElementById('btn-save-notice').textContent='공지 등록';
+  ['notice-title','notice-content','notice-author'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('notice-pinned').checked=false;
+  document.getElementById('notice-category').value='공지';
+  openModal('modal-notice');
+}
+function openEventModal(){
+  document.getElementById('event-edit-id').value='';
+  document.getElementById('modal-event-title').textContent='일정 추가';
+  document.getElementById('btn-save-event').textContent='일정 등록';
+  ['event-title','event-time','event-place','event-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('event-date').value=fmtDate(new Date());
+  document.getElementById('event-category').value='#1a56db';
+  openModal('modal-event');
+}
+function openTaskModal(s){
+  document.getElementById('task-edit-id').value='';
+  document.getElementById('modal-task-title').textContent='과제 추가';
+  document.getElementById('btn-save-task').textContent='과제 등록';
+  ['task-title','task-desc','task-assignee','task-due'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('task-priority').value='mid';
+  document.getElementById('task-status').value=s||'todo';
+  openModal('modal-task');
+}
+function openMeetingModal(){
+  document.getElementById('meeting-edit-id').value='';
+  document.getElementById('modal-meeting-title').textContent='회의록 작성';
+  document.getElementById('btn-save-meeting').textContent='회의록 저장';
+  ['meeting-title','meeting-place','meeting-attendees','meeting-agenda','meeting-content'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('meeting-date').value=fmtDate(new Date());
+  openModal('modal-meeting');
+}
+function openDocModal(){
+  document.getElementById('doc-edit-id').value='';
+  document.getElementById('modal-doc-title').textContent='자료 추가';
+  document.getElementById('btn-save-doc').textContent='자료 등록';
+  ['doc-name','doc-desc'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('doc-type').value='📊 발표자료';
+  openModal('modal-doc');
+}
+function openMemberModal(){
+  document.getElementById('member-edit-id').value='';
+  document.getElementById('modal-member-title').textContent='멤버 추가';
+  document.getElementById('btn-save-member').textContent='멤버 등록';
+  ['member-name','member-school','member-contact'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('member-role').value='위원';
+  document.getElementById('member-region').value='춘천';
+  openModal('modal-member');
+}
+function openPollModal(){document.getElementById('poll-deadline').value=fmtDate(new Date(Date.now()+7*86400000));openModal('modal-poll')}
+
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+
+function showToast(msg,icon='✅'){
+  const tc=document.getElementById('toast-container');
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=`<span class="toast-icon">${icon}</span>${msg}`;
+  tc.appendChild(t);setTimeout(()=>t.remove(),3200);
+}
+
+function fmtDate(d){const dt=d instanceof Date?d:new Date(d);return dt.toISOString().split('T')[0]}
+function fmtDisplay(s){if(!s)return'';const d=new Date(s);return`${d.getMonth()+1}월 ${d.getDate()}일`}
+function fmtFull(s){if(!s)return'';const d=s instanceof Date?s:new Date(s);return`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function initials(n){return n?n.slice(0,1):'?'}
+function avatarColor(n){return COLORS[n?n.charCodeAt(0)%COLORS.length:0]}
+
+function updateClock(){
+  const now=new Date(),days=['일','월','화','수','목','금','토'];
+  document.getElementById('current-date').textContent=`${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} (${days[now.getDay()]})`;
+}
+setInterval(updateClock,60000);updateClock();
+
+/* DASHBOARD */
+function refreshDashboard(){
+  const notices=DB.get('notices'),events=DB.get('events'),tasks=DB.get('tasks'),members=DB.get('members'),polls=DB.get('polls');
+  const now=new Date(),cm=now.getMonth(),cy=now.getFullYear();
+  const inProgress=tasks.filter(t=>t.status==='progress').length;
+  const tme=events.filter(e=>{const d=new Date(e.date);return d.getMonth()===cm&&d.getFullYear()===cy}).length;
+  const done=tasks.filter(t=>t.status==='done').length;
+  const lp=polls.filter(p=>p.active).length;
+  document.getElementById('hs-members').textContent=members.length;
+  document.getElementById('hs-tasks').textContent=inProgress;
+  document.getElementById('hs-events').textContent=tme;
+  document.getElementById('sc-notices').textContent=notices.length;
+  document.getElementById('sc-events').textContent=tme;
+  document.getElementById('sc-tasks').textContent=done;
+  document.getElementById('sc-polls').textContent=lp;
+  const badge=document.getElementById('badge-notices');
+  const bbadge=document.getElementById('bnav-badge-notices');
+  if(notices.length>0){
+    if(badge){badge.textContent=notices.length;badge.style.display='';}
+    if(bbadge){bbadge.textContent=notices.length;bbadge.style.display='';}
+  }else{
+    if(badge)badge.style.display='none';
+    if(bbadge)bbadge.style.display='none';
+  }
+
+  const feed=document.getElementById('activity-feed');
+  const all=[
+    ...notices.map(n=>({text:`<strong>${n.author||'익명'}</strong>님이 공지를 등록했습니다: "${n.title}"`,time:n.createdAt,icon:'📢',color:'#1a56db'})),
+    ...events.map(e=>({text:`일정 "<strong>${e.title}</strong>"이 ${fmtDisplay(e.date)}에 예정되어 있습니다`,time:e.createdAt,icon:'📅',color:'#059669'})),
+    ...tasks.map(t=>({text:`과제 "<strong>${t.title}</strong>"이 ${t.status==='done'?'완료':'등록'}되었습니다`,time:t.createdAt,icon:'✅',color:'#d97706'})),
+  ].sort((a,b)=>b.time-a.time).slice(0,8);
+
+  if(all.length===0){feed.innerHTML=`<div class="empty-state" style="padding:24px 0"><div style="font-size:32px;margin-bottom:8px">📭</div><div style="font-size:13px;color:var(--muted)">아직 활동 내역이 없습니다</div></div>`;}
+  else feed.innerHTML=all.map(a=>{const d=new Date(a.time);return`<div class="activity-item"><div class="activity-avatar" style="background:${a.color}">${a.icon}</div><div class="activity-text">${a.text}</div><div class="activity-time">${d.getMonth()+1}/${d.getDate()}</div></div>`}).join('');
+
+  const ue=document.getElementById('upcoming-events');
+  const upcoming=events.filter(e=>new Date(e.date)>=new Date(fmtDate(now))).sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(0,5);
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  if(upcoming.length===0){ue.innerHTML=`<div class="empty-state" style="padding:16px 0"><div style="font-size:32px;margin-bottom:8px">📆</div><div style="font-size:13px;color:var(--muted)">예정된 일정이 없습니다</div></div>`;}
+  else ue.innerHTML=upcoming.map(e=>{const d=new Date(e.date);return`<div class="event-item" onclick="navigate('calendar');setTimeout(()=>editEvent('${e.id}'),200)"><div class="event-date"><div class="event-date-day">${d.getDate()}</div><div class="event-date-month">${months[d.getMonth()]}</div></div><div class="event-info"><div class="event-title">${e.title}</div><div class="event-meta">${e.time||''} ${e.place?'· '+e.place:''}</div></div><div class="event-dot" style="background:${e.color||'#1a56db'}"></div></div>`}).join('');
+}
+
+/* NOTICES */
+function editNotice(id){
+  const notices=DB.get('notices');
+  const n=notices.find(item=>item.id===id);
+  if(!n)return;
+  document.getElementById('notice-edit-id').value=n.id;
+  document.getElementById('modal-notice-title').textContent='공지사항 수정';
+  document.getElementById('btn-save-notice').textContent='수정 완료';
+  document.getElementById('notice-category').value=n.category||'공지';
+  document.getElementById('notice-title').value=n.title||'';
+  document.getElementById('notice-content').value=n.content||'';
+  document.getElementById('notice-author').value=n.author||'';
+  document.getElementById('notice-pinned').checked=!!n.pinned;
+  openModal('modal-notice');
+}
+
+function saveNotice(){
+  const title=document.getElementById('notice-title').value.trim();
+  if(!title){showToast('제목을 입력해주세요','⚠️');return}
+  const editId=document.getElementById('notice-edit-id').value;
+  let notices=DB.get('notices');
+  if(editId){
+    const idx=notices.findIndex(n=>n.id===editId);
+    if(idx!==-1){
+      notices[idx]={
+        ...notices[idx],
+        category:document.getElementById('notice-category').value,
+        title,
+        content:document.getElementById('notice-content').value,
+        author:document.getElementById('notice-author').value||'관리자',
+        pinned:document.getElementById('notice-pinned').checked,
+        updatedAt:Date.now()
+      };
+      DB.set('notices',notices);
+      closeModal('modal-notice');
+      showToast('공지사항이 수정되었습니다');
+    }
+  }else{
+    notices.unshift({
+      id:uid(),
+      category:document.getElementById('notice-category').value,
+      title,
+      content:document.getElementById('notice-content').value,
+      author:document.getElementById('notice-author').value||'관리자',
+      pinned:document.getElementById('notice-pinned').checked,
+      createdAt:Date.now()
+    });
+    DB.set('notices',notices);
+    closeModal('modal-notice');
+    showToast('공지사항이 등록되었습니다');
+  }
+  if(currentPage==='notices')renderNotices();
+  refreshDashboard();
+}
+
+function filterNotices(btn,cat){
+  currentFilter=cat;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderNotices();
+}
+
+function renderNotices(){
+  let notices=DB.get('notices');
+  if(currentFilter!=='all')notices=notices.filter(n=>n.category===currentFilter);
+  notices.sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||b.createdAt-a.createdAt);
+  const icons={'공지':'📌','자유':'💬','건의':'💡'};
+  const bc={'공지':'badge-primary','자유':'badge-success','건의':'badge-warning'};
+  const list=document.getElementById('notice-list');
+  if(notices.length===0){list.innerHTML=`<div class="card empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">게시글이 없습니다</div><div class="empty-state-desc">첫 공지사항을 작성해보세요</div></div>`;return}
+  list.innerHTML=notices.map(n=>`<div class="notice-card ${n.pinned?'pinned':''}" onclick="editNotice('${n.id}')" title="클릭하여 수정"><div class="notice-icon">${icons[n.category]||'📋'}</div><div class="notice-body"><div class="notice-title-row">${n.pinned?'<span class="badge badge-danger">📌 고정</span>':''}<span class="badge ${bc[n.category]||'badge-gray'}">${n.category}</span><div class="notice-title">${n.title}</div></div>${n.content?`<div class="notice-content">${n.content}</div>`:''}<div class="notice-meta"><span class="notice-meta-item">👤 ${n.author||'관리자'}</span><span class="notice-meta-item">📅 ${fmtFull(new Date(n.createdAt))}</span>${n.updatedAt?'<span class="notice-meta-item" style="color:var(--primary);font-weight:600">(수정됨)</span>':''}</div></div><div class="notice-actions" onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm btn-icon" onclick="editNotice('${n.id}')" title="수정">✏️</button><button class="btn btn-ghost btn-sm btn-icon" onclick="deleteNotice('${n.id}')" title="삭제">🗑</button></div></div>`).join('');
+}
+
+function deleteNotice(id){
+  if(!confirm('삭제하시겠습니까?'))return;
+  DB.set('notices',DB.get('notices').filter(n=>n.id!==id));renderNotices();showToast('삭제되었습니다','🗑');refreshDashboard();
+}
+
+/* CALENDAR */
+function initCalendar(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth()}
+function changeMonth(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+function goToday(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();renderCalendar()}
+
+function openEventForDate(dateStr){
+  openEventModal();
+  document.getElementById('event-date').value=dateStr;
+}
+
+function editEvent(id){
+  const events=DB.get('events');
+  const e=events.find(item=>item.id===id);
+  if(!e)return;
+  document.getElementById('event-edit-id').value=e.id;
+  document.getElementById('modal-event-title').textContent='일정 수정';
+  document.getElementById('btn-save-event').textContent='수정 완료';
+  document.getElementById('event-title').value=e.title||'';
+  document.getElementById('event-date').value=e.date||fmtDate(new Date());
+  document.getElementById('event-time').value=e.time||'';
+  document.getElementById('event-place').value=e.place||'';
+  document.getElementById('event-category').value=e.color||'#1a56db';
+  document.getElementById('event-note').value=e.note||'';
+  openModal('modal-event');
+}
+
+function renderCalendar(){
+  const months=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('cal-month-title').textContent=`${calYear}년 ${months[calMonth]}`;
+  const events=DB.get('events'),today=fmtDate(new Date());
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const dip=new Date(calYear,calMonth,0).getDate();
+  const rows=Math.ceil((firstDay+dim)/7);let html='';
+  for(let i=0;i<rows*7;i++){
+    let day,cls,isCurrentMonth=i>=firstDay&&i<firstDay+dim;
+    if(i<firstDay){day=dip-firstDay+i+1;cls='cal-day other-month';}
+    else if(i<firstDay+dim){day=i-firstDay+1;const d=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;cls='cal-day current-month'+(d===today?' today':'');}
+    else{day=i-firstDay-dim+1;cls='cal-day other-month';}
+    const dateStr=isCurrentMonth?`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`:'';
+    const de=dateStr?events.filter(e=>e.date===dateStr):[];
+    const ev=de.slice(0,3).map(e=>`<div class="cal-event-dot" style="background:${e.color||'#1a56db'};cursor:pointer" onclick="event.stopPropagation();editEvent('${e.id}')" title="${e.title} (수정)">${e.title}</div>`).join('');
+    const sc=i%7===0?'style="color:#dc2626"':i%7===6?'style="color:#1a56db"':'';
+    html+=`<div class="${cls}" ${isCurrentMonth?`onclick="openEventForDate('${dateStr}')"`:''}><div class="cal-day-num" ${sc}>${day}</div>${ev}</div>`;
+  }
+  document.getElementById('calendar-days').innerHTML=html;
+  const allEvents=events.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const sidebar=document.getElementById('event-sidebar-list');
+  document.getElementById('event-count-badge').textContent=allEvents.length;
+  if(allEvents.length===0){sidebar.innerHTML=`<div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">등록된 일정이 없습니다</div></div>`;}
+  else sidebar.innerHTML=allEvents.map(e=>{const d=new Date(e.date);return`<div class="sidebar-event-card" style="border-left-color:${e.color||'#1a56db'};cursor:pointer" onclick="editEvent('${e.id}')" title="클릭하여 수정"><div class="sidebar-event-title">${e.title}</div><div class="sidebar-event-meta"><span>${d.getMonth()+1}월 ${d.getDate()}일</span>${e.time?`<span>⏰ ${e.time}</span>`:''} ${e.place?`<span>📍 ${e.place}</span>`:''}</div><div style="display:flex;gap:4px;margin-top:6px" onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:11px;color:var(--primary)" onclick="editEvent('${e.id}')">수정</button><button class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:11px;color:var(--semantic-down)" onclick="deleteEvent('${e.id}')">삭제</button></div></div>`}).join('');
+}
+
+function saveEvent(){
+  const title=document.getElementById('event-title').value.trim(),date=document.getElementById('event-date').value;
+  if(!title||!date){showToast('제목과 날짜를 입력해주세요','⚠️');return}
+  const editId=document.getElementById('event-edit-id').value;
+  let events=DB.get('events');
+  if(editId){
+    const idx=events.findIndex(e=>e.id===editId);
+    if(idx!==-1){
+      events[idx]={
+        ...events[idx],
+        title,
+        date,
+        time:document.getElementById('event-time').value,
+        place:document.getElementById('event-place').value,
+        color:document.getElementById('event-category').value,
+        note:document.getElementById('event-note').value,
+        updatedAt:Date.now()
+      };
+      DB.set('events',events);
+      closeModal('modal-event');
+      showToast('일정이 수정되었습니다');
+    }
+  }else{
+    events.push({
+      id:uid(),
+      title,
+      date,
+      time:document.getElementById('event-time').value,
+      place:document.getElementById('event-place').value,
+      color:document.getElementById('event-category').value,
+      note:document.getElementById('event-note').value,
+      createdAt:Date.now()
+    });
+    DB.set('events',events);
+    closeModal('modal-event');
+    showToast('일정이 등록되었습니다');
+  }
+  if(currentPage==='calendar')renderCalendar();
+  refreshDashboard();
+}
+
+function deleteEvent(id){
+  if(!confirm('일정을 삭제하시겠습니까?'))return;
+  DB.set('events',DB.get('events').filter(e=>e.id!==id));renderCalendar();showToast('삭제되었습니다','🗑');refreshDashboard();
+}
+
+/* KANBAN */
+function filterKanbanTab(btn, status){
+  currentKanbanTab = status;
+  document.querySelectorAll('.kanban-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderKanban();
+}
+
+function editTask(id){
+  const tasks=DB.get('tasks');
+  const t=tasks.find(item=>item.id===id);
+  if(!t)return;
+  document.getElementById('task-edit-id').value=t.id;
+  document.getElementById('modal-task-title').textContent='과제 수정';
+  document.getElementById('btn-save-task').textContent='수정 완료';
+  document.getElementById('task-title').value=t.title||'';
+  document.getElementById('task-desc').value=t.desc||'';
+  document.getElementById('task-assignee').value=t.assignee||'';
+  document.getElementById('task-due').value=t.due||'';
+  document.getElementById('task-priority').value=t.priority||'mid';
+  document.getElementById('task-status').value=t.status||'todo';
+  openModal('modal-task');
+}
+
+function renderKanban(){
+  const tasks=DB.get('tasks');const cols={todo:[],progress:[],done:[]};
+  tasks.forEach(t=>{if(cols[t.status])cols[t.status].push(t)});
+
+  const cAll=document.getElementById('tab-count-all');if(cAll)cAll.textContent=tasks.length;
+  const cTodo=document.getElementById('tab-count-todo');if(cTodo)cTodo.textContent=cols.todo.length;
+  const cProg=document.getElementById('tab-count-progress');if(cProg)cProg.textContent=cols.progress.length;
+  const cDone=document.getElementById('tab-count-done');if(cDone)cDone.textContent=cols.done.length;
+
+  ['todo','progress','done'].forEach(status=>{
+    const colEl=document.getElementById('kcol-'+status);
+    if(colEl){
+      if(currentKanbanTab==='all'||currentKanbanTab===status){
+        colEl.style.display='';
+      }else{
+        colEl.style.display='none';
+      }
+    }
+    const col=document.getElementById('col-'+status);
+    document.getElementById('count-'+status).textContent=cols[status].length;
+    if(cols[status].length===0){col.innerHTML=`<div style="text-align:center;padding:20px;color:var(--muted-soft);font-size:13px">과제 없음</div>`;return}
+    const pl={high:'🔴 높음',mid:'🟡 보통',low:'🟢 낮음'},today=fmtDate(new Date());
+    col.innerHTML=cols[status].map(t=>{
+      const ov=t.due&&t.due<today&&t.status!=='done';
+      return`<div class="kanban-card" draggable="true" ondragstart="dragStart(event,'${t.id}')" ondragover="dragOver(event)" ondrop="dropTask(event,'${status}')" onclick="editTask('${t.id}')" title="클릭하여 수정">
+        <div class="kanban-card-actions" onclick="event.stopPropagation()">
+          <button class="kanban-action-btn" onclick="editTask('${t.id}')" title="수정">✏️</button>
+          ${status!=='done'?`<button class="kanban-action-btn" onclick="moveTask('${t.id}','${status==='todo'?'progress':'done'}')" title="${status==='todo'?'진행중으로':'완료로'}">→</button>`:''}
+          <button class="kanban-action-btn del" onclick="deleteTask('${t.id}')" title="삭제">✕</button>
+        </div>
+        <div class="kanban-card-title">${t.title}</div>
+        ${t.desc?`<div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.4">${t.desc}</div>`:''}
+        <div class="kanban-card-meta">
+          <span class="badge badge-gray" style="font-size:10px">${pl[t.priority]||''}</span>
+          ${t.assignee?`<div class="kanban-assignee"><div class="assignee-dot" style="background:${avatarColor(t.assignee)}">${initials(t.assignee)}</div>${t.assignee}</div>`:''}
+          ${t.due?`<span class="kanban-due${ov?' overdue':''}">📅 ${fmtDisplay(t.due)}</span>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+function saveTask(){
+  const title=document.getElementById('task-title').value.trim();
+  if(!title){showToast('과제 제목을 입력해주세요','⚠️');return}
+  const editId=document.getElementById('task-edit-id').value;
+  let tasks=DB.get('tasks');
+  if(editId){
+    const idx=tasks.findIndex(t=>t.id===editId);
+    if(idx!==-1){
+      tasks[idx]={
+        ...tasks[idx],
+        title,
+        desc:document.getElementById('task-desc').value,
+        assignee:document.getElementById('task-assignee').value,
+        due:document.getElementById('task-due').value,
+        priority:document.getElementById('task-priority').value,
+        status:document.getElementById('task-status').value,
+        updatedAt:Date.now()
+      };
+      DB.set('tasks',tasks);
+      closeModal('modal-task');
+      showToast('과제가 수정되었습니다');
+    }
+  }else{
+    tasks.push({
+      id:uid(),
+      title,
+      desc:document.getElementById('task-desc').value,
+      assignee:document.getElementById('task-assignee').value,
+      due:document.getElementById('task-due').value,
+      priority:document.getElementById('task-priority').value,
+      status:document.getElementById('task-status').value,
+      createdAt:Date.now()
+    });
+    DB.set('tasks',tasks);
+    closeModal('modal-task');
+    showToast('과제가 등록되었습니다');
+  }
+  if(currentPage==='kanban')renderKanban();
+  refreshDashboard();
+}
+
+function moveTask(id,ns){const tasks=DB.get('tasks');const t=tasks.find(t=>t.id===id);if(t)t.status=ns;DB.set('tasks',tasks);renderKanban();showToast(ns==='done'?'완료되었습니다 🎉':'진행 중으로 이동했습니다')}
+function deleteTask(id){if(!confirm('과제를 삭제하시겠습니까?'))return;DB.set('tasks',DB.get('tasks').filter(t=>t.id!==id));renderKanban();showToast('삭제되었습니다','🗑');refreshDashboard()}
+let draggedId=null;
+function dragStart(e,id){draggedId=id;e.dataTransfer.effectAllowed='move'}
+function dragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move'}
+function dropTask(e,ns){e.preventDefault();if(!draggedId)return;moveTask(draggedId,ns);draggedId=null}
+
+/* MEETINGS */
+function editMeeting(id){
+  const meetings=DB.get('meetings');
+  const m=meetings.find(item=>item.id===id);
+  if(!m)return;
+  document.getElementById('meeting-edit-id').value=m.id;
+  document.getElementById('modal-meeting-title').textContent='회의록 수정';
+  document.getElementById('btn-save-meeting').textContent='수정 완료';
+  document.getElementById('meeting-title').value=m.title||'';
+  document.getElementById('meeting-date').value=m.date||fmtDate(new Date());
+  document.getElementById('meeting-place').value=m.place||'';
+  document.getElementById('meeting-attendees').value=(m.attendees||[]).join(', ');
+  document.getElementById('meeting-agenda').value=m.agenda||'';
+  document.getElementById('meeting-content').value=m.content||'';
+  openModal('modal-meeting');
+}
+
+function saveMeeting(){
+  const title=document.getElementById('meeting-title').value.trim();
+  if(!title){showToast('회의 제목을 입력해주세요','⚠️');return}
+  const editId=document.getElementById('meeting-edit-id').value;
+  let meetings=DB.get('meetings');
+  if(editId){
+    const idx=meetings.findIndex(m=>m.id===editId);
+    if(idx!==-1){
+      meetings[idx]={
+        ...meetings[idx],
+        title,
+        date:document.getElementById('meeting-date').value,
+        place:document.getElementById('meeting-place').value,
+        attendees:document.getElementById('meeting-attendees').value.split(',').map(s=>s.trim()).filter(Boolean),
+        agenda:document.getElementById('meeting-agenda').value,
+        content:document.getElementById('meeting-content').value,
+        updatedAt:Date.now()
+      };
+      DB.set('meetings',meetings);
+      closeModal('modal-meeting');
+      showToast('회의록이 수정되었습니다');
+    }
+  }else{
+    meetings.unshift({
+      id:uid(),
+      title,
+      date:document.getElementById('meeting-date').value,
+      place:document.getElementById('meeting-place').value,
+      attendees:document.getElementById('meeting-attendees').value.split(',').map(s=>s.trim()).filter(Boolean),
+      agenda:document.getElementById('meeting-agenda').value,
+      content:document.getElementById('meeting-content').value,
+      createdAt:Date.now()
+    });
+    DB.set('meetings',meetings);
+    closeModal('modal-meeting');
+    showToast('회의록이 저장되었습니다');
+  }
+  if(currentPage==='meetings')renderMeetings();
+}
+
+function renderMeetings(){
+  const meetings=DB.get('meetings'),docs=DB.get('docs');
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const list=document.getElementById('meeting-list');
+  if(meetings.length===0){list.innerHTML=`<div class="card empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">회의록이 없습니다</div><div class="empty-state-desc">첫 회의록을 작성해보세요</div></div>`;}
+  else list.innerHTML=meetings.map(m=>{const d=new Date(m.date);return`<div class="meeting-card" onclick="editMeeting('${m.id}')" title="클릭하여 수정"><div class="meeting-card-header"><div class="meeting-date-block"><div class="meeting-date-day">${d.getDate()}</div><div class="meeting-date-month">${months[d.getMonth()]||''}</div></div><div class="meeting-info"><div class="meeting-title">${m.title}</div><div class="meeting-attendees">${m.attendees.map(a=>`<span class="attendee-chip">${a}</span>`).join('')}</div></div><div onclick="event.stopPropagation()" style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm btn-icon" onclick="editMeeting('${m.id}')" title="수정">✏️</button><button class="btn btn-ghost btn-sm btn-icon" onclick="deleteMeeting('${m.id}')" title="삭제">🗑</button></div></div>${m.agenda?`<div class="meeting-agenda"><strong>📋 안건:</strong> ${m.agenda}</div>`:''} ${m.content?`<div class="meeting-agenda"><strong>✅ 결정사항:</strong> ${m.content}</div>`:''} ${m.place?`<div style="font-size:12px;color:var(--muted);margin-top:8px">📍 ${m.place}</div>`:''}</div>`}).join('');
+  const dl=document.getElementById('doc-list');
+  if(docs.length===0){dl.innerHTML=`<div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">등록된 자료가 없습니다</div></div>`;}
+  else dl.innerHTML=docs.map(d=>`<div class="doc-item" onclick="editDoc('${d.id}')" title="클릭하여 수정"><div class="doc-icon" style="background:var(--primary-light)">${d.type.split(' ')[0]}</div><div style="flex:1;min-width:0"><div class="doc-name">${d.name}</div>${d.desc?`<div style="font-size:11px;color:var(--muted)">${d.desc}</div>`:''}</div><div onclick="event.stopPropagation()" style="display:flex;gap:2px"><button class="btn btn-ghost btn-sm btn-icon" onclick="editDoc('${d.id}')" title="수정">✏️</button><button class="btn btn-ghost btn-sm btn-icon" onclick="deleteDoc('${d.id}')" title="삭제">🗑</button></div></div>`).join('');
+}
+
+function deleteMeeting(id){if(!confirm('회의록을 삭제하시겠습니까?'))return;DB.set('meetings',DB.get('meetings').filter(m=>m.id!==id));renderMeetings();showToast('삭제되었습니다','🗑')}
+
+function editDoc(id){
+  const docs=DB.get('docs');
+  const d=docs.find(item=>item.id===id);
+  if(!d)return;
+  document.getElementById('doc-edit-id').value=d.id;
+  document.getElementById('modal-doc-title').textContent='자료 수정';
+  document.getElementById('btn-save-doc').textContent='수정 완료';
+  document.getElementById('doc-name').value=d.name||'';
+  document.getElementById('doc-type').value=d.type||'📊 발표자료';
+  document.getElementById('doc-desc').value=d.desc||'';
+  openModal('modal-doc');
+}
+
+function saveDoc(){
+  const name=document.getElementById('doc-name').value.trim();
+  if(!name){showToast('자료 이름을 입력해주세요','⚠️');return}
+  const editId=document.getElementById('doc-edit-id').value;
+  let docs=DB.get('docs');
+  if(editId){
+    const idx=docs.findIndex(d=>d.id===editId);
+    if(idx!==-1){
+      docs[idx]={
+        ...docs[idx],
+        name,
+        type:document.getElementById('doc-type').value,
+        desc:document.getElementById('doc-desc').value,
+        updatedAt:Date.now()
+      };
+      DB.set('docs',docs);
+      closeModal('modal-doc');
+      showToast('자료가 수정되었습니다');
+    }
+  }else{
+    docs.unshift({
+      id:uid(),
+      name,
+      type:document.getElementById('doc-type').value,
+      desc:document.getElementById('doc-desc').value,
+      createdAt:Date.now()
+    });
+    DB.set('docs',docs);
+    closeModal('modal-doc');
+    showToast('자료가 등록되었습니다');
+  }
+  if(currentPage==='meetings')renderMeetings();
+}
+
+function deleteDoc(id){if(!confirm('자료를 삭제하시겠습니까?'))return;DB.set('docs',DB.get('docs').filter(d=>d.id!==id));renderMeetings();showToast('삭제되었습니다','🗑')}
+
+/* MEMBERS */
+function editMember(id){
+  const members=DB.get('members');
+  const m=members.find(item=>item.id===id);
+  if(!m)return;
+  document.getElementById('member-edit-id').value=m.id;
+  document.getElementById('modal-member-title').textContent='멤버 정보 수정';
+  document.getElementById('btn-save-member').textContent='수정 완료';
+  document.getElementById('member-name').value=m.name||'';
+  document.getElementById('member-role').value=m.role||'위원';
+  document.getElementById('member-school').value=m.school||'';
+  document.getElementById('member-region').value=m.region||'춘천';
+  document.getElementById('member-contact').value=m.contact||'';
+  openModal('modal-member');
+}
+
+function saveMember(){
+  const name=document.getElementById('member-name').value.trim();
+  if(!name){showToast('이름을 입력해주세요','⚠️');return}
+  const editId=document.getElementById('member-edit-id').value;
+  let members=DB.get('members');
+  if(editId){
+    const idx=members.findIndex(m=>m.id===editId);
+    if(idx!==-1){
+      members[idx]={
+        ...members[idx],
+        name,
+        role:document.getElementById('member-role').value,
+        school:document.getElementById('member-school').value,
+        region:document.getElementById('member-region').value,
+        contact:document.getElementById('member-contact').value,
+        updatedAt:Date.now()
+      };
+      DB.set('members',members);
+      closeModal('modal-member');
+      showToast('멤버 정보가 수정되었습니다');
+    }
+  }else{
+    members.push({
+      id:uid(),
+      name,
+      role:document.getElementById('member-role').value,
+      school:document.getElementById('member-school').value,
+      region:document.getElementById('member-region').value,
+      contact:document.getElementById('member-contact').value,
+      color:COLORS[members.length%COLORS.length],
+      createdAt:Date.now()
+    });
+    DB.set('members',members);
+    closeModal('modal-member');
+    showToast('멤버가 추가되었습니다');
+  }
+  if(currentPage==='members')renderMembers();
+  refreshDashboard();
+}
+
+function renderMembers(){
+  const members=DB.get('members');const grid=document.getElementById('members-grid');
+  if(members.length===0){grid.innerHTML=`<div class="card empty-state" style="grid-column:1/-1"><div class="empty-state-icon">👥</div><div class="empty-state-title">등록된 멤버가 없습니다</div><div class="empty-state-desc">멤버를 추가해보세요</div></div>`;document.getElementById('org-chart-view').innerHTML=`<div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">멤버를 추가하면 조직도가 표시됩니다</div></div>`;return}
+  grid.innerHTML=members.map(m=>`<div class="member-card" onclick="editMember('${m.id}')" title="클릭하여 수정"><div class="member-avatar" style="background:${m.color||'#1a56db'}">${initials(m.name)}</div><div class="member-name">${m.name}</div><div class="member-role">${m.role}</div><div class="member-school">${m.school||''} ${m.region?'· '+m.region:''}</div>${m.contact?`<div class="member-contact">📞 ${m.contact}</div>`:''}<div class="member-actions" onclick="event.stopPropagation()"><button class="btn btn-outline btn-sm" onclick="editMember('${m.id}')">수정</button><button class="btn btn-danger btn-sm" onclick="deleteMember('${m.id}')">삭제</button></div></div>`).join('');
+  const ro=['위원장','부위원장','총무','사무국장','위원'],gr={};
+  members.forEach(m=>{const r=m.role||'위원';if(!gr[r])gr[r]=[];gr[r].push(m)});
+  let oh='';
+  ro.forEach(role=>{if(!gr[role])return;oh+=`<div class="org-level">${gr[role].map(m=>`<div class="org-node${role==='위원장'?' leader':''}" onclick="editMember('${m.id}')" title="클릭하여 수정"><div class="org-node-name">${m.name}</div><div class="org-node-role">${role} · ${m.school||m.region||''}</div></div>`).join('')}</div>`});
+  document.getElementById('org-chart-view').innerHTML=oh||`<div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">등록된 멤버가 없습니다</div></div>`;
+}
+
+function deleteMember(id){if(!confirm('멤버를 삭제하시겠습니까?'))return;DB.set('members',DB.get('members').filter(m=>m.id!==id));renderMembers();showToast('삭제되었습니다','🗑');refreshDashboard()}
+
+/* POLLS */
+function addPollOption(){
+  const c=document.getElementById('poll-options-input');const n=c.querySelectorAll('input').length+1;
+  const i=document.createElement('input');i.type='text';i.className='form-input';i.placeholder=`선택지 ${n}`;i.style.marginTop='8px';c.appendChild(i);
+}
+
+function savePoll(){
+  const title=document.getElementById('poll-title').value.trim();
+  const inputs=document.querySelectorAll('#poll-options-input input');
+  const options=Array.from(inputs).map(i=>i.value.trim()).filter(Boolean);
+  if(!title){showToast('투표 제목을 입력해주세요','⚠️');return}
+  if(options.length<2){showToast('선택지를 2개 이상 입력해주세요','⚠️');return}
+  const polls=DB.get('polls');
+  polls.unshift({id:uid(),title,options:options.map(o=>({label:o,votes:0})),type:document.getElementById('poll-type').value,deadline:document.getElementById('poll-deadline').value,active:true,totalVotes:0,createdAt:Date.now()});
+  DB.set('polls',polls);closeModal('modal-poll');
+  document.getElementById('poll-title').value='';
+  document.getElementById('poll-options-input').innerHTML='<input type="text" class="form-input" placeholder="선택지 1" style="margin-bottom:8px"><input type="text" class="form-input" placeholder="선택지 2">';
+  showToast('투표가 시작되었습니다 🗳️');if(currentPage==='polls')renderPolls();refreshDashboard();
+}
+
+function vote(pollId,optIdx){
+  const polls=DB.get('polls'),poll=polls.find(p=>p.id===pollId);
+  if(!poll||!poll.active)return;
+  const sk='voted_'+pollId;if(sessionStorage.getItem(sk)){showToast('이미 투표하셨습니다','⚠️');return}
+  poll.options[optIdx].votes+=1;poll.totalVotes=(poll.totalVotes||0)+1;
+  DB.set('polls',polls);sessionStorage.setItem(sk,'1');showToast('투표가 완료되었습니다 🗳️');renderPolls();
+}
+
+function closePoll(id){const polls=DB.get('polls'),p=polls.find(p=>p.id===id);if(p)p.active=false;DB.set('polls',polls);renderPolls();showToast('투표가 마감되었습니다')}
+function deletePoll(id){if(!confirm('투표를 삭제하시겠습니까?'))return;DB.set('polls',DB.get('polls').filter(p=>p.id!==id));renderPolls();showToast('삭제되었습니다','🗑');refreshDashboard()}
+
+function renderPolls(){
+  const polls=DB.get('polls');const grid=document.getElementById('polls-grid');
+  if(polls.length===0){grid.innerHTML=`<div class="card empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🗳️</div><div class="empty-state-title">진행 중인 투표가 없습니다</div><div class="empty-state-desc">새 투표를 생성해보세요</div></div>`;return}
+  grid.innerHTML=polls.map(poll=>{
+    const total=poll.totalVotes||0;const hv=!!sessionStorage.getItem('voted_'+poll.id);
+    const oh=poll.options.map((opt,i)=>{const pct=total>0?Math.round((opt.votes/total)*100):0;return`<div class="poll-option ${hv||!poll.active?'disabled':''}" onclick="${poll.active&&!hv?`vote('${poll.id}',${i})`:''}"><div class="poll-option-bar" style="width:${pct}%"></div><div class="poll-option-content"><span class="poll-option-label">${opt.label}</span>${hv||!poll.active?`<span class="poll-option-pct">${pct}%</span>`:''}<span class="poll-option-votes">${opt.votes}표</span></div></div>`}).join('');
+    return`<div class="poll-card"><div class="poll-header"><div class="poll-title">${poll.title}</div><div class="poll-meta">${poll.active?'<span class="poll-status-live"><span class="live-dot"></span>진행중</span>':'<span class="badge badge-gray">마감</span>'}<span class="badge badge-gray">${poll.type==='multi'?'복수선택':'단일선택'}</span></div></div><div class="poll-options">${oh}</div><div class="poll-footer"><span class="poll-total">총 ${total}명 참여</span><div style="display:flex;gap:8px;align-items:center">${poll.deadline?`<span class="poll-deadline">마감 ${fmtDisplay(poll.deadline)}</span>`:''} ${poll.active?`<button class="btn btn-ghost btn-sm" onclick="closePoll('${poll.id}')" style="color:var(--semantic-warning)">마감</button>`:''}<button class="btn btn-ghost btn-sm" onclick="deletePoll('${poll.id}')" style="color:var(--semantic-down)">삭제</button></div></div></div>`;
+  }).join('');
+}
+
+/* INIT */
+function init(){
+  initCalendar();
+  const notices=DB.get('notices');
+  if(notices.length===0){
+    const now=new Date(),y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0');
+    DB.set('notices',[
+      {id:uid(),category:'공지',title:'2030청년위원회 협업 플랫폼 오픈!',content:'강원교총 2030청년위원회 공식 협업 플랫폼이 오픈되었습니다. 공지사항, 일정, 프로젝트 관리 등 다양한 기능을 활용해 효율적으로 소통하세요.',author:'관리자',pinned:true,createdAt:Date.now()},
+      {id:uid(),category:'공지',title:'2026년도 하반기 정기모임 안내',content:'하반기 정기모임이 10월 중 예정되어 있습니다. 일정이 확정되는 대로 캘린더에 등록하겠습니다. 많은 참여 부탁드립니다.',author:'위원장',pinned:false,createdAt:Date.now()-86400000},
+      {id:uid(),category:'자유',title:'좋은 교육 관련 자료 공유해요 😊',content:'교육 현장에서 유용하게 쓸 수 있는 자료나 아이디어가 있으시면 자유롭게 공유해주세요!',author:'위원',pinned:false,createdAt:Date.now()-172800000}
+    ]);
+    const nm=String(now.getMonth()+2>12?1:now.getMonth()+2).padStart(2,'0');
+    DB.set('events',[
+      {id:uid(),title:'월례 정기회의',date:`${y}-${m}-15`,time:'14:00',place:'강원교총 회의실',color:'#1a56db',createdAt:Date.now()},
+      {id:uid(),title:'2030청년 연수',date:`${y}-${m}-22`,time:'10:00',place:'춘천연수원',color:'#d97706',createdAt:Date.now()},
+      {id:uid(),title:'교원 정책 세미나',date:`${y}-${nm}-05`,time:'13:00',place:'강원도교육연수원',color:'#059669',createdAt:Date.now()}
+    ]);
+    DB.set('tasks',[
+      {id:uid(),title:'하반기 사업계획서 작성',desc:'2026년 하반기 주요 사업 계획 수립',assignee:'김위원',due:`${y}-${nm}-10`,priority:'high',status:'progress',createdAt:Date.now()},
+      {id:uid(),title:'연수 자료 준비',desc:'청년 연수 PPT 및 배부자료 준비',assignee:'이청년',due:`${y}-${m}-20`,priority:'mid',status:'todo',createdAt:Date.now()},
+      {id:uid(),title:'회원 명부 업데이트',desc:'2026년 신규 회원 정보 정리',assignee:'박총무',due:`${y}-${m}-30`,priority:'low',status:'todo',createdAt:Date.now()},
+      {id:uid(),title:'SNS 홍보 콘텐츠 제작',desc:'위원회 활동 소식 홍보 게시물',assignee:'최위원',due:`${y}-${m}-28`,priority:'mid',status:'done',createdAt:Date.now()}
+    ]);
+    DB.set('members',[
+      {id:uid(),name:'김강원',role:'위원장',school:'춘천초등학교',region:'춘천',contact:'010-1234-5678',color:'#1a56db',createdAt:Date.now()},
+      {id:uid(),name:'이청년',role:'부위원장',school:'원주중학교',region:'원주',contact:'010-2345-6789',color:'#059669',createdAt:Date.now()},
+      {id:uid(),name:'박총무',role:'총무',school:'강릉고등학교',region:'강릉',contact:'010-3456-7890',color:'#d97706',createdAt:Date.now()},
+      {id:uid(),name:'최위원',role:'위원',school:'동해초등학교',region:'동해',contact:'010-4567-8901',color:'#7c3aed',createdAt:Date.now()},
+      {id:uid(),name:'정교원',role:'위원',school:'태백중학교',region:'태백',contact:'010-5678-9012',color:'#dc2626',createdAt:Date.now()}
+    ]);
+    DB.set('polls',[{id:uid(),title:'2026 하반기 연수 희망 주제를 선택해주세요',active:true,options:[{label:'교육과정 재구성 및 성취기준 분석',votes:4},{label:'AI·디지털 리터러시 교육 실습',votes:7},{label:'학생 상담 및 생활지도 기법',votes:3},{label:'교원 노동법 및 권리 이해',votes:5}],type:'single',deadline:fmtDate(new Date(Date.now()+7*86400000)),totalVotes:19,createdAt:Date.now()}]);
+  }
+  refreshDashboard();
+}
+init();
+</script>
+</body>
+</html>
