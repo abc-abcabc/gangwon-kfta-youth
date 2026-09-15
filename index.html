@@ -328,14 +328,14 @@ ul{list-style:none}
 .member-actions{display:flex;gap:var(--space-xs);justify-content:center;margin-top:var(--space-base);padding-top:var(--space-sm);border-top:1px solid var(--hairline-soft)}
 /* Org Chart */
 .org-chart-container{margin-bottom:var(--space-xl)}
-.org-chart-view{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%}
+.org-chart-view{display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;padding:10px 0}
 .org-level-section{width:100%;display:flex;flex-direction:column;align-items:center}
-.org-level{width:100%;display:grid;gap:10px}
-.org-level-leader{display:flex;justify-content:center;width:100%;margin-bottom:6px}
-.org-level-leader .org-node{width:100%;max-width:320px;background:linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);border:1px solid #1e40af;color:#ffffff;box-shadow:0 4px 14px rgba(29,78,216,0.28);padding:14px 18px}
-.org-level-leader .org-node:hover{box-shadow:0 6px 20px rgba(29,78,216,0.38);transform:translateY(-2px)}
-.org-level-leader .org-node-name{color:#ffffff !important;font-size:16px;font-weight:800;letter-spacing:-0.2px;text-shadow:0 1px 2px rgba(0,0,0,0.15)}
-.org-level-leader .org-node-role{color:#eff6ff !important;font-size:12.5px;font-weight:600;margin-top:4px}
+.org-level{width:100%;display:grid;gap:12px}
+.org-level-leader{display:flex;justify-content:center;width:100%;margin-bottom:12px}
+.org-level-leader .org-node{width:100%;max-width:340px;background:linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);border:none;color:#ffffff;box-shadow:0 6px 20px rgba(29,78,216,0.3);padding:16px 20px;border-radius:18px}
+.org-level-leader .org-node:hover{box-shadow:0 8px 24px rgba(29,78,216,0.42);transform:translateY(-3px)}
+.org-level-leader .org-node-name{color:#ffffff !important;font-size:16.5px;font-weight:800;letter-spacing:-0.2px;text-shadow:0 1px 2px rgba(0,0,0,0.2)}
+.org-level-leader .org-node-role{color:#eff6ff !important;font-size:13px;font-weight:600;margin-top:4px}
 .org-level-exec{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));max-width:800px}
 .org-level-members{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));width:100%}
 .org-node{background:var(--canvas);border:1.5px solid var(--hairline);border-radius:var(--rounded-xl);padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:all var(--transition-fast);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
@@ -509,13 +509,13 @@ ul{list-style:none}
   .poll-option-votes{font-size:11px;white-space:nowrap}
 
   /* Mobile Org Chart Grid: Perfect 2-column Alignment */
-  .org-chart-view{gap:18px}
-  .org-level-leader{margin-bottom:4px}
-  .org-level-members, .org-level-exec{grid-template-columns:repeat(2,1fr);gap:8px;width:100%}
-  .org-node{padding:10px 6px;border-radius:12px}
+  .org-chart-view{gap:28px;padding:6px 0}
+  .org-level-leader{margin-bottom:8px}
+  .org-level-members, .org-level-exec{grid-template-columns:repeat(2,1fr);gap:10px;width:100%}
+  .org-node{padding:11px 6px;border-radius:12px}
   .org-node-name{font-size:13.5px}
   .org-node-role{font-size:11px}
-  .org-level-leader .org-node{max-width:100%;padding:13px 12px}
+  .org-level-leader .org-node{max-width:100%;padding:14px 12px;border-radius:16px}
 
   /* Mobile Bottom Sheet Modal */
   .modal-overlay{align-items:flex-end;padding:0}
