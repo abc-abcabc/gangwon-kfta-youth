@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Firebase App & Firestore Compat SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --primary: #1a56db;
@@ -367,6 +370,19 @@ ul{list-style:none}
 .kanban-tab-btn.active .kanban-tab-count{background:rgba(255,255,255,0.25);color:#fff}
 .modal-drag-handle{width:36px;height:4px;background:var(--hairline);border-radius:2px;margin:0 auto 14px;display:none}
 
+/* Firebase Sync Badge & Guide Box */
+.sync-status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--rounded-pill);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--transition-fast);background:var(--surface-strong);color:var(--body);border:1px solid var(--hairline);white-space:nowrap}
+.sync-status-badge:hover{background:var(--hairline);color:var(--ink);box-shadow:var(--shadow-card)}
+.sync-status-badge.connected{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+.sync-status-badge.error{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#9ca3af;flex-shrink:0;transition:all var(--transition-fast)}
+.sync-status-badge.connected .sync-dot{background:#10b981;box-shadow:0 0 0 2px rgba(16,185,129,0.25);animation:pulse 2s infinite}
+.sync-status-badge.error .sync-dot{background:#ef4444}
+.guide-box{background:var(--surface-soft);border:1px solid var(--hairline);border-radius:var(--rounded-lg);padding:12px 14px;font-size:13px;line-height:1.6;color:var(--body)}
+.guide-step{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.guide-step:last-child{margin-bottom:0}
+.guide-num{width:20px;height:20px;border-radius:50%;background:var(--primary-light);color:var(--primary);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+
 /* Toast */
 .toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .toast{background:var(--surface-dark);color:var(--on-dark);padding:12px 20px;border-radius:var(--rounded-lg);font-size:14px;font-weight:500;box-shadow:var(--shadow-hover);display:flex;align-items:center;gap:var(--space-sm);pointer-events:all;animation:toastIn 0.35s cubic-bezier(0.4,0,0.2,1);max-width:320px}
@@ -466,6 +482,10 @@ ul{list-style:none}
       <button class="topbar-menu-btn" onclick="toggleMobileSidebar(true)" aria-label="메뉴 열기">☰</button>
       <div class="topbar-title" id="topbar-title">대시보드</div>
       <div class="topbar-actions">
+        <div class="sync-status-badge" id="sync-status" onclick="openFirebaseConfigModal()" title="Firebase 클라우드 연동 상태 (클릭하여 설정)">
+          <span class="sync-dot"></span>
+          <span class="sync-text" id="sync-text">☁️ 클라우드 설정</span>
+        </div>
         <span class="topbar-date" id="current-date"></span>
         <button class="btn btn-primary btn-sm" onclick="quickAction()">＋ 새 항목</button>
       </div>
@@ -724,19 +744,242 @@ ul{list-style:none}
       <div class="form-group"><label class="form-label">투표 방식</label><select class="form-select" id="poll-type"><option value="single">단일 선택</option><option value="multi">복수 선택</option></select></div>
     </div>
   </div>
-  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-poll')">취소</button><button class="btn btn-primary" onclick="savePoll()">투표 시작</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-firebase"><div class="modal" style="max-width:580px"><div class="modal-drag-handle"></div>
+  <div class="modal-header">
+    <div>
+      <div class="modal-title">🔥 Firebase 클라우드 DB 연동</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px">연동 시 모든 기기에서 실시간으로 글이 공유 및 수정됩니다.</div>
+    </div>
+    <button class="modal-close" onclick="closeModal('modal-firebase')">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="guide-box">
+      <div style="font-weight:700;color:var(--ink);margin-bottom:6px">📌 Firebase 1분 설정 가이드 (무료):</div>
+      <div class="guide-step"><div class="guide-num">1</div><div><a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary);font-weight:600;text-decoration:underline">Firebase 콘솔 (새 창)</a>에서 <strong>[프로젝트 추가]</strong>를 누릅니다.</div></div>
+      <div class="guide-step"><div class="guide-num">2</div><div>좌측 메뉴 <strong>[빌드] &gt; [Firestore Database]</strong>에서 데이터베이스를 생성합니다 (테스트 모드로 시작).</div></div>
+      <div class="guide-step"><div class="guide-num">3</div><div><strong>[프로젝트 설정] &gt; [내 앱] &gt; 웹(&lt;/&gt;)</strong> 추가 후 나타나는 <code>firebaseConfig</code> 코드를 아래에 붙여넣기만 하면 연동 완료!</div></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Firebase Config 코드 붙여넣기</label>
+      <textarea class="form-textarea" id="fb-raw-config" placeholder='const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "your-app.firebaseapp.com",
+  projectId: "your-app",
+  storageBucket: "your-app.appspot.com",
+  messagingSenderId: "123456...",
+  appId: "1:123456..."
+};' style="min-height:130px;font-family:var(--font-mono);font-size:12px"></textarea>
+    </div>
+
+    <div id="fb-connection-status" style="font-size:13px;font-weight:600;padding:4px 0"></div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" onclick="closeModal('modal-firebase')">닫기</button>
+    <button class="btn btn-outline btn-sm" onclick="resetToLocalDB()" style="margin-right:auto">로컬 모드로 전환</button>
+    <button class="btn btn-primary" onclick="saveFirebaseConfig()">연결 및 동기화 시작</button>
+  </div>
 </div></div>
 
 <div class="toast-container" id="toast-container"></div>
 
 <script>
-const DB={get(k){try{return JSON.parse(localStorage.getItem('gcta_'+k)||'[]')}catch{return[]}},set(k,v){localStorage.setItem('gcta_'+k,JSON.stringify(v))}};
-let currentPage='dashboard',calYear,calMonth,currentFilter='all',currentKanbanTab='all';
-const COLORS=['#1a56db','#059669','#d97706','#7c3aed','#dc2626','#0891b2','#0d9488','#9333ea'];
+// Firebase Realtime Configuration & State
+let fdb = null, fdbActive = false, fdbUnsubscribers = [];
+let fbData = { notices: null, events: null, tasks: null, meetings: null, docs: null, members: null, polls: null };
+
+// Global Firebase Config (Users can paste their config directly here or through the UI modal)
+window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+
+const DB = {
+  get(k) {
+    if (fdbActive && fbData[k] !== null) return fbData[k];
+    try { return JSON.parse(localStorage.getItem('gcta_' + k) || '[]'); } catch { return []; }
+  },
+  set(k, v) {
+    if (fdbActive) fbData[k] = v;
+    try { localStorage.setItem('gcta_' + k, JSON.stringify(v)); } catch (e) {}
+  }
+};
+
+let currentPage = 'dashboard', calYear, calMonth, currentFilter = 'all', currentKanbanTab = 'all';
+const COLORS = ['#1a56db','#059669','#d97706','#7c3aed','#dc2626','#0891b2','#0d9488','#9333ea'];
+
+function getSavedFirebaseConfig() {
+  if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && window.FIREBASE_CONFIG.projectId) {
+    return window.FIREBASE_CONFIG;
+  }
+  try {
+    const saved = localStorage.getItem('gcta_firebase_config');
+    if (saved) return JSON.parse(saved);
+  } catch (e) {}
+  return null;
+}
+
+function updateSyncStatusUI(status, msg) {
+  const badge = document.getElementById('sync-status');
+  const text = document.getElementById('sync-text');
+  const statusEl = document.getElementById('fb-connection-status');
+  if (!badge) return;
+  badge.classList.remove('connected', 'error');
+  if (status === 'connected') {
+    badge.classList.add('connected');
+    if (text) text.textContent = '🟢 실시간 클라우드';
+    if (statusEl) statusEl.innerHTML = '<span style="color:#059669">✅ Firebase 클라우드 DB에 실시간 연결되었습니다!</span>';
+  } else if (status === 'error') {
+    badge.classList.add('error');
+    if (text) text.textContent = '⚠️ 연결 오류';
+    if (statusEl) statusEl.innerHTML = `<span style="color:#dc2626">❌ 연결 실패: ${msg || '설정을 확인해주세요'}</span>`;
+  } else {
+    if (text) text.textContent = '☁️ 클라우드 설정';
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--muted)">⚪ 현재 로컬 저장소(LocalStorage) 모드로 동작 중입니다.</span>';
+  }
+}
+
+async function initFirebase(config) {
+  if (!config || !config.apiKey || !config.projectId || config.apiKey === "AIzaSy...") {
+    updateSyncStatusUI('local');
+    return false;
+  }
+  try {
+    fdbUnsubscribers.forEach(unsub => { try { unsub(); } catch (e) {} });
+    fdbUnsubscribers = [];
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(config);
+    }
+    fdb = firebase.firestore();
+    fdbActive = true;
+    updateSyncStatusUI('connected');
+
+    const collections = ['notices', 'events', 'tasks', 'meetings', 'docs', 'members', 'polls'];
+    collections.forEach(col => {
+      const unsub = fdb.collection(col).onSnapshot(snapshot => {
+        const list = [];
+        snapshot.forEach(doc => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        fbData[col] = list;
+        try { localStorage.setItem('gcta_' + col, JSON.stringify(list)); } catch (e) {}
+
+        if (col === 'notices' && currentPage === 'notices') renderNotices();
+        if (col === 'events' && currentPage === 'calendar') renderCalendar();
+        if (col === 'tasks' && currentPage === 'kanban') renderKanban();
+        if ((col === 'meetings' || col === 'docs') && currentPage === 'meetings') renderMeetings();
+        if (col === 'members' && currentPage === 'members') renderMembers();
+        if (col === 'polls' && currentPage === 'polls') renderPolls();
+        refreshDashboard();
+      }, err => {
+        console.error(`Firebase error on ${col}:`, err);
+        updateSyncStatusUI('error', err.message);
+      });
+      fdbUnsubscribers.push(unsub);
+    });
+
+    checkAndSeedFirestore();
+    return true;
+  } catch (err) {
+    console.error('Firebase init error:', err);
+    fdbActive = false;
+    updateSyncStatusUI('error', err.message);
+    return false;
+  }
+}
+
+async function checkAndSeedFirestore() {
+  if (!fdbActive || !fdb) return;
+  try {
+    const snap = await fdb.collection('notices').limit(1).get();
+    if (snap.empty) {
+      const localNotices = DB.get('notices');
+      const localEvents = DB.get('events');
+      const localTasks = DB.get('tasks');
+      const localMembers = DB.get('members');
+      const localPolls = DB.get('polls');
+
+      const batch = fdb.batch();
+      localNotices.forEach(n => batch.set(fdb.collection('notices').doc(n.id), n));
+      localEvents.forEach(e => batch.set(fdb.collection('events').doc(e.id), e));
+      localTasks.forEach(t => batch.set(fdb.collection('tasks').doc(t.id), t));
+      localMembers.forEach(m => batch.set(fdb.collection('members').doc(m.id), m));
+      localPolls.forEach(p => batch.set(fdb.collection('polls').doc(p.id), p));
+      await batch.commit();
+      console.log('Sample data successfully seeded to Firestore');
+    }
+  } catch (e) {
+    console.warn('Firestore seeding check:', e);
+  }
+}
+
+function openFirebaseConfigModal() {
+  const saved = getSavedFirebaseConfig();
+  if (saved) {
+    document.getElementById('fb-raw-config').value = JSON.stringify(saved, null, 2);
+  }
+  openModal('modal-firebase');
+}
+
+async function saveFirebaseConfig() {
+  const raw = document.getElementById('fb-raw-config').value.trim();
+  if (!raw) {
+    showToast('Firebase 설정 코드를 입력해주세요', '⚠️');
+    return;
+  }
+  let configObj = null;
+  try {
+    configObj = JSON.parse(raw);
+  } catch (e) {
+    try {
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (match) {
+        const fn = new Function('return ' + match[0]);
+        configObj = fn();
+      }
+    } catch (err) {
+      showToast('올바른 설정 형식(JSON/JS Object)을 입력해주세요', '⚠️');
+      return;
+    }
+  }
+
+  if (!configObj || !configObj.apiKey || !configObj.projectId) {
+    showToast('apiKey와 projectId가 포함된 설정을 입력해주세요', '⚠️');
+    return;
+  }
+
+  try { localStorage.setItem('gcta_firebase_config', JSON.stringify(configObj)); } catch (e) {}
+  showToast('Firebase 연결을 시작합니다...');
+  const success = await initFirebase(configObj);
+  if (success) {
+    showToast('Firebase 클라우드 DB에 연결되었습니다! 🎉');
+    closeModal('modal-firebase');
+  }
+}
+
+function resetToLocalDB() {
+  try { localStorage.removeItem('gcta_firebase_config'); } catch (e) {}
+  fdbUnsubscribers.forEach(unsub => { try { unsub(); } catch (e) {} });
+  fdbUnsubscribers = [];
+  fdb = null;
+  fdbActive = false;
+  fbData = { notices: null, events: null, tasks: null, meetings: null, docs: null, members: null, polls: null };
+  updateSyncStatusUI('local');
+  closeModal('modal-firebase');
+  showToast('로컬 저장소 모드로 전환되었습니다');
+  refreshDashboard();
+}
 
 function toggleMobileSidebar(show){
-  const sidebar=document.getElementById('sidebar');
-  const overlay=document.getElementById('sidebar-overlay');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
   if(show){
     sidebar?.classList.add('mobile-open');
     overlay?.classList.add('open');
@@ -776,6 +1019,7 @@ function quickAction(){
 
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
+
 function openNoticeModal(){
   document.getElementById('notice-edit-id').value='';
   document.getElementById('modal-notice-title').textContent='공지사항 작성';
@@ -910,29 +1154,32 @@ function editNotice(id){
   openModal('modal-notice');
 }
 
-function saveNotice(){
+async function saveNotice(){
   const title=document.getElementById('notice-title').value.trim();
   if(!title){showToast('제목을 입력해주세요','⚠️');return}
   const editId=document.getElementById('notice-edit-id').value;
   let notices=DB.get('notices');
   if(editId){
     const idx=notices.findIndex(n=>n.id===editId);
-    if(idx!==-1){
-      notices[idx]={
-        ...notices[idx],
-        category:document.getElementById('notice-category').value,
-        title,
-        content:document.getElementById('notice-content').value,
-        author:document.getElementById('notice-author').value||'관리자',
-        pinned:document.getElementById('notice-pinned').checked,
-        updatedAt:Date.now()
-      };
-      DB.set('notices',notices);
-      closeModal('modal-notice');
-      showToast('공지사항이 수정되었습니다');
+    const updated = {
+      ...(idx!==-1?notices[idx]:{}),
+      id:editId,
+      category:document.getElementById('notice-category').value,
+      title,
+      content:document.getElementById('notice-content').value,
+      author:document.getElementById('notice-author').value||'관리자',
+      pinned:document.getElementById('notice-pinned').checked,
+      updatedAt:Date.now()
+    };
+    if(idx!==-1) notices[idx]=updated;
+    if(fdbActive&&fdb){
+      fdb.collection('notices').doc(editId).set(updated,{merge:true}).catch(console.error);
     }
+    DB.set('notices',notices);
+    closeModal('modal-notice');
+    showToast('공지사항이 수정되었습니다');
   }else{
-    notices.unshift({
+    const newItem = {
       id:uid(),
       category:document.getElementById('notice-category').value,
       title,
@@ -940,7 +1187,11 @@ function saveNotice(){
       author:document.getElementById('notice-author').value||'관리자',
       pinned:document.getElementById('notice-pinned').checked,
       createdAt:Date.now()
-    });
+    };
+    notices.unshift(newItem);
+    if(fdbActive&&fdb){
+      fdb.collection('notices').doc(newItem.id).set(newItem).catch(console.error);
+    }
     DB.set('notices',notices);
     closeModal('modal-notice');
     showToast('공지사항이 등록되었습니다');
@@ -964,8 +1215,11 @@ function renderNotices(){
   list.innerHTML=notices.map(n=>`<div class="notice-card ${n.pinned?'pinned':''}" onclick="editNotice('${n.id}')" title="클릭하여 수정"><div class="notice-icon">${icons[n.category]||'📋'}</div><div class="notice-body"><div class="notice-title-row">${n.pinned?'<span class="badge badge-danger">📌 고정</span>':''}<span class="badge ${bc[n.category]||'badge-gray'}">${n.category}</span><div class="notice-title">${n.title}</div></div>${n.content?`<div class="notice-content">${n.content}</div>`:''}<div class="notice-meta"><span class="notice-meta-item">👤 ${n.author||'관리자'}</span><span class="notice-meta-item">📅 ${fmtFull(new Date(n.createdAt))}</span>${n.updatedAt?'<span class="notice-meta-item" style="color:var(--primary);font-weight:600">(수정됨)</span>':''}</div></div><div class="notice-actions" onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm btn-icon" onclick="editNotice('${n.id}')" title="수정">✏️</button><button class="btn btn-ghost btn-sm btn-icon" onclick="deleteNotice('${n.id}')" title="삭제">🗑</button></div></div>`).join('');
 }
 
-function deleteNotice(id){
+async function deleteNotice(id){
   if(!confirm('삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('notices').doc(id).delete().catch(console.error);
+  }
   DB.set('notices',DB.get('notices').filter(n=>n.id!==id));renderNotices();showToast('삭제되었습니다','🗑');refreshDashboard();
 }
 
@@ -1022,30 +1276,33 @@ function renderCalendar(){
   else sidebar.innerHTML=allEvents.map(e=>{const d=new Date(e.date);return`<div class="sidebar-event-card" style="border-left-color:${e.color||'#1a56db'};cursor:pointer" onclick="editEvent('${e.id}')" title="클릭하여 수정"><div class="sidebar-event-title">${e.title}</div><div class="sidebar-event-meta"><span>${d.getMonth()+1}월 ${d.getDate()}일</span>${e.time?`<span>⏰ ${e.time}</span>`:''} ${e.place?`<span>📍 ${e.place}</span>`:''}</div><div style="display:flex;gap:4px;margin-top:6px" onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:11px;color:var(--primary)" onclick="editEvent('${e.id}')">수정</button><button class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:11px;color:var(--semantic-down)" onclick="deleteEvent('${e.id}')">삭제</button></div></div>`}).join('');
 }
 
-function saveEvent(){
+async function saveEvent(){
   const title=document.getElementById('event-title').value.trim(),date=document.getElementById('event-date').value;
   if(!title||!date){showToast('제목과 날짜를 입력해주세요','⚠️');return}
   const editId=document.getElementById('event-edit-id').value;
   let events=DB.get('events');
   if(editId){
     const idx=events.findIndex(e=>e.id===editId);
-    if(idx!==-1){
-      events[idx]={
-        ...events[idx],
-        title,
-        date,
-        time:document.getElementById('event-time').value,
-        place:document.getElementById('event-place').value,
-        color:document.getElementById('event-category').value,
-        note:document.getElementById('event-note').value,
-        updatedAt:Date.now()
-      };
-      DB.set('events',events);
-      closeModal('modal-event');
-      showToast('일정이 수정되었습니다');
+    const updated = {
+      ...(idx!==-1?events[idx]:{}),
+      id:editId,
+      title,
+      date,
+      time:document.getElementById('event-time').value,
+      place:document.getElementById('event-place').value,
+      color:document.getElementById('event-category').value,
+      note:document.getElementById('event-note').value,
+      updatedAt:Date.now()
+    };
+    if(idx!==-1) events[idx]=updated;
+    if(fdbActive&&fdb){
+      fdb.collection('events').doc(editId).set(updated,{merge:true}).catch(console.error);
     }
+    DB.set('events',events);
+    closeModal('modal-event');
+    showToast('일정이 수정되었습니다');
   }else{
-    events.push({
+    const newItem = {
       id:uid(),
       title,
       date,
@@ -1054,7 +1311,11 @@ function saveEvent(){
       color:document.getElementById('event-category').value,
       note:document.getElementById('event-note').value,
       createdAt:Date.now()
-    });
+    };
+    events.push(newItem);
+    if(fdbActive&&fdb){
+      fdb.collection('events').doc(newItem.id).set(newItem).catch(console.error);
+    }
     DB.set('events',events);
     closeModal('modal-event');
     showToast('일정이 등록되었습니다');
@@ -1063,8 +1324,11 @@ function saveEvent(){
   refreshDashboard();
 }
 
-function deleteEvent(id){
+async function deleteEvent(id){
   if(!confirm('일정을 삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('events').doc(id).delete().catch(console.error);
+  }
   DB.set('events',DB.get('events').filter(e=>e.id!==id));renderCalendar();showToast('삭제되었습니다','🗑');refreshDashboard();
 }
 
@@ -1134,30 +1398,33 @@ function renderKanban(){
   });
 }
 
-function saveTask(){
+async function saveTask(){
   const title=document.getElementById('task-title').value.trim();
   if(!title){showToast('과제 제목을 입력해주세요','⚠️');return}
   const editId=document.getElementById('task-edit-id').value;
   let tasks=DB.get('tasks');
   if(editId){
     const idx=tasks.findIndex(t=>t.id===editId);
-    if(idx!==-1){
-      tasks[idx]={
-        ...tasks[idx],
-        title,
-        desc:document.getElementById('task-desc').value,
-        assignee:document.getElementById('task-assignee').value,
-        due:document.getElementById('task-due').value,
-        priority:document.getElementById('task-priority').value,
-        status:document.getElementById('task-status').value,
-        updatedAt:Date.now()
-      };
-      DB.set('tasks',tasks);
-      closeModal('modal-task');
-      showToast('과제가 수정되었습니다');
+    const updated = {
+      ...(idx!==-1?tasks[idx]:{}),
+      id:editId,
+      title,
+      desc:document.getElementById('task-desc').value,
+      assignee:document.getElementById('task-assignee').value,
+      due:document.getElementById('task-due').value,
+      priority:document.getElementById('task-priority').value,
+      status:document.getElementById('task-status').value,
+      updatedAt:Date.now()
+    };
+    if(idx!==-1) tasks[idx]=updated;
+    if(fdbActive&&fdb){
+      fdb.collection('tasks').doc(editId).set(updated,{merge:true}).catch(console.error);
     }
+    DB.set('tasks',tasks);
+    closeModal('modal-task');
+    showToast('과제가 수정되었습니다');
   }else{
-    tasks.push({
+    const newItem = {
       id:uid(),
       title,
       desc:document.getElementById('task-desc').value,
@@ -1166,7 +1433,11 @@ function saveTask(){
       priority:document.getElementById('task-priority').value,
       status:document.getElementById('task-status').value,
       createdAt:Date.now()
-    });
+    };
+    tasks.push(newItem);
+    if(fdbActive&&fdb){
+      fdb.collection('tasks').doc(newItem.id).set(newItem).catch(console.error);
+    }
     DB.set('tasks',tasks);
     closeModal('modal-task');
     showToast('과제가 등록되었습니다');
@@ -1175,8 +1446,25 @@ function saveTask(){
   refreshDashboard();
 }
 
-function moveTask(id,ns){const tasks=DB.get('tasks');const t=tasks.find(t=>t.id===id);if(t)t.status=ns;DB.set('tasks',tasks);renderKanban();showToast(ns==='done'?'완료되었습니다 🎉':'진행 중으로 이동했습니다')}
-function deleteTask(id){if(!confirm('과제를 삭제하시겠습니까?'))return;DB.set('tasks',DB.get('tasks').filter(t=>t.id!==id));renderKanban();showToast('삭제되었습니다','🗑');refreshDashboard()}
+async function moveTask(id,ns){
+  const tasks=DB.get('tasks');const t=tasks.find(t=>t.id===id);
+  if(t) {
+    t.status=ns;
+    if(fdbActive&&fdb){
+      fdb.collection('tasks').doc(id).set({status:ns},{merge:true}).catch(console.error);
+    }
+  }
+  DB.set('tasks',tasks);renderKanban();showToast(ns==='done'?'완료되었습니다 🎉':'진행 중으로 이동했습니다');
+}
+
+async function deleteTask(id){
+  if(!confirm('과제를 삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('tasks').doc(id).delete().catch(console.error);
+  }
+  DB.set('tasks',DB.get('tasks').filter(t=>t.id!==id));renderKanban();showToast('삭제되었습니다','🗑');refreshDashboard();
+}
+
 let draggedId=null;
 function dragStart(e,id){draggedId=id;e.dataTransfer.effectAllowed='move'}
 function dragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move'}
@@ -1199,30 +1487,33 @@ function editMeeting(id){
   openModal('modal-meeting');
 }
 
-function saveMeeting(){
+async function saveMeeting(){
   const title=document.getElementById('meeting-title').value.trim();
   if(!title){showToast('회의 제목을 입력해주세요','⚠️');return}
   const editId=document.getElementById('meeting-edit-id').value;
   let meetings=DB.get('meetings');
   if(editId){
     const idx=meetings.findIndex(m=>m.id===editId);
-    if(idx!==-1){
-      meetings[idx]={
-        ...meetings[idx],
-        title,
-        date:document.getElementById('meeting-date').value,
-        place:document.getElementById('meeting-place').value,
-        attendees:document.getElementById('meeting-attendees').value.split(',').map(s=>s.trim()).filter(Boolean),
-        agenda:document.getElementById('meeting-agenda').value,
-        content:document.getElementById('meeting-content').value,
-        updatedAt:Date.now()
-      };
-      DB.set('meetings',meetings);
-      closeModal('modal-meeting');
-      showToast('회의록이 수정되었습니다');
+    const updated = {
+      ...(idx!==-1?meetings[idx]:{}),
+      id:editId,
+      title,
+      date:document.getElementById('meeting-date').value,
+      place:document.getElementById('meeting-place').value,
+      attendees:document.getElementById('meeting-attendees').value.split(',').map(s=>s.trim()).filter(Boolean),
+      agenda:document.getElementById('meeting-agenda').value,
+      content:document.getElementById('meeting-content').value,
+      updatedAt:Date.now()
+    };
+    if(idx!==-1) meetings[idx]=updated;
+    if(fdbActive&&fdb){
+      fdb.collection('meetings').doc(editId).set(updated,{merge:true}).catch(console.error);
     }
+    DB.set('meetings',meetings);
+    closeModal('modal-meeting');
+    showToast('회의록이 수정되었습니다');
   }else{
-    meetings.unshift({
+    const newItem = {
       id:uid(),
       title,
       date:document.getElementById('meeting-date').value,
@@ -1231,7 +1522,11 @@ function saveMeeting(){
       agenda:document.getElementById('meeting-agenda').value,
       content:document.getElementById('meeting-content').value,
       createdAt:Date.now()
-    });
+    };
+    meetings.unshift(newItem);
+    if(fdbActive&&fdb){
+      fdb.collection('meetings').doc(newItem.id).set(newItem).catch(console.error);
+    }
     DB.set('meetings',meetings);
     closeModal('modal-meeting');
     showToast('회의록이 저장되었습니다');
@@ -1250,7 +1545,13 @@ function renderMeetings(){
   else dl.innerHTML=docs.map(d=>`<div class="doc-item" onclick="editDoc('${d.id}')" title="클릭하여 수정"><div class="doc-icon" style="background:var(--primary-light)">${d.type.split(' ')[0]}</div><div style="flex:1;min-width:0"><div class="doc-name">${d.name}</div>${d.desc?`<div style="font-size:11px;color:var(--muted)">${d.desc}</div>`:''}</div><div onclick="event.stopPropagation()" style="display:flex;gap:2px"><button class="btn btn-ghost btn-sm btn-icon" onclick="editDoc('${d.id}')" title="수정">✏️</button><button class="btn btn-ghost btn-sm btn-icon" onclick="deleteDoc('${d.id}')" title="삭제">🗑</button></div></div>`).join('');
 }
 
-function deleteMeeting(id){if(!confirm('회의록을 삭제하시겠습니까?'))return;DB.set('meetings',DB.get('meetings').filter(m=>m.id!==id));renderMeetings();showToast('삭제되었습니다','🗑')}
+async function deleteMeeting(id){
+  if(!confirm('회의록을 삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('meetings').doc(id).delete().catch(console.error);
+  }
+  DB.set('meetings',DB.get('meetings').filter(m=>m.id!==id));renderMeetings();showToast('삭제되었습니다','🗑');
+}
 
 function editDoc(id){
   const docs=DB.get('docs');
@@ -1265,33 +1566,40 @@ function editDoc(id){
   openModal('modal-doc');
 }
 
-function saveDoc(){
+async function saveDoc(){
   const name=document.getElementById('doc-name').value.trim();
   if(!name){showToast('자료 이름을 입력해주세요','⚠️');return}
   const editId=document.getElementById('doc-edit-id').value;
   let docs=DB.get('docs');
   if(editId){
     const idx=docs.findIndex(d=>d.id===editId);
-    if(idx!==-1){
-      docs[idx]={
-        ...docs[idx],
-        name,
-        type:document.getElementById('doc-type').value,
-        desc:document.getElementById('doc-desc').value,
-        updatedAt:Date.now()
-      };
-      DB.set('docs',docs);
-      closeModal('modal-doc');
-      showToast('자료가 수정되었습니다');
+    const updated = {
+      ...(idx!==-1?docs[idx]:{}),
+      id:editId,
+      name,
+      type:document.getElementById('doc-type').value,
+      desc:document.getElementById('doc-desc').value,
+      updatedAt:Date.now()
+    };
+    if(idx!==-1) docs[idx]=updated;
+    if(fdbActive&&fdb){
+      fdb.collection('docs').doc(editId).set(updated,{merge:true}).catch(console.error);
     }
+    DB.set('docs',docs);
+    closeModal('modal-doc');
+    showToast('자료가 수정되었습니다');
   }else{
-    docs.unshift({
+    const newItem = {
       id:uid(),
       name,
       type:document.getElementById('doc-type').value,
       desc:document.getElementById('doc-desc').value,
       createdAt:Date.now()
-    });
+    };
+    docs.unshift(newItem);
+    if(fdbActive&&fdb){
+      fdb.collection('docs').doc(newItem.id).set(newItem).catch(console.error);
+    }
     DB.set('docs',docs);
     closeModal('modal-doc');
     showToast('자료가 등록되었습니다');
@@ -1299,7 +1607,13 @@ function saveDoc(){
   if(currentPage==='meetings')renderMeetings();
 }
 
-function deleteDoc(id){if(!confirm('자료를 삭제하시겠습니까?'))return;DB.set('docs',DB.get('docs').filter(d=>d.id!==id));renderMeetings();showToast('삭제되었습니다','🗑')}
+async function deleteDoc(id){
+  if(!confirm('자료를 삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('docs').doc(id).delete().catch(console.error);
+  }
+  DB.set('docs',DB.get('docs').filter(d=>d.id!==id));renderMeetings();showToast('삭제되었습니다','🗑');
+}
 
 /* MEMBERS */
 function editMember(id){
@@ -1317,29 +1631,32 @@ function editMember(id){
   openModal('modal-member');
 }
 
-function saveMember(){
+async function saveMember(){
   const name=document.getElementById('member-name').value.trim();
   if(!name){showToast('이름을 입력해주세요','⚠️');return}
   const editId=document.getElementById('member-edit-id').value;
   let members=DB.get('members');
   if(editId){
     const idx=members.findIndex(m=>m.id===editId);
-    if(idx!==-1){
-      members[idx]={
-        ...members[idx],
-        name,
-        role:document.getElementById('member-role').value,
-        school:document.getElementById('member-school').value,
-        region:document.getElementById('member-region').value,
-        contact:document.getElementById('member-contact').value,
-        updatedAt:Date.now()
-      };
-      DB.set('members',members);
-      closeModal('modal-member');
-      showToast('멤버 정보가 수정되었습니다');
+    const updated = {
+      ...(idx!==-1?members[idx]:{}),
+      id:editId,
+      name,
+      role:document.getElementById('member-role').value,
+      school:document.getElementById('member-school').value,
+      region:document.getElementById('member-region').value,
+      contact:document.getElementById('member-contact').value,
+      updatedAt:Date.now()
+    };
+    if(idx!==-1) members[idx]=updated;
+    if(fdbActive&&fdb){
+      fdb.collection('members').doc(editId).set(updated,{merge:true}).catch(console.error);
     }
+    DB.set('members',members);
+    closeModal('modal-member');
+    showToast('멤버 정보가 수정되었습니다');
   }else{
-    members.push({
+    const newItem = {
       id:uid(),
       name,
       role:document.getElementById('member-role').value,
@@ -1348,7 +1665,11 @@ function saveMember(){
       contact:document.getElementById('member-contact').value,
       color:COLORS[members.length%COLORS.length],
       createdAt:Date.now()
-    });
+    };
+    members.push(newItem);
+    if(fdbActive&&fdb){
+      fdb.collection('members').doc(newItem.id).set(newItem).catch(console.error);
+    }
     DB.set('members',members);
     closeModal('modal-member');
     showToast('멤버가 추가되었습니다');
@@ -1368,7 +1689,13 @@ function renderMembers(){
   document.getElementById('org-chart-view').innerHTML=oh||`<div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">등록된 멤버가 없습니다</div></div>`;
 }
 
-function deleteMember(id){if(!confirm('멤버를 삭제하시겠습니까?'))return;DB.set('members',DB.get('members').filter(m=>m.id!==id));renderMembers();showToast('삭제되었습니다','🗑');refreshDashboard()}
+async function deleteMember(id){
+  if(!confirm('멤버를 삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('members').doc(id).delete().catch(console.error);
+  }
+  DB.set('members',DB.get('members').filter(m=>m.id!==id));renderMembers();showToast('삭제되었습니다','🗑');refreshDashboard();
+}
 
 /* POLLS */
 function addPollOption(){
@@ -1376,30 +1703,62 @@ function addPollOption(){
   const i=document.createElement('input');i.type='text';i.className='form-input';i.placeholder=`선택지 ${n}`;i.style.marginTop='8px';c.appendChild(i);
 }
 
-function savePoll(){
+async function savePoll(){
   const title=document.getElementById('poll-title').value.trim();
   const inputs=document.querySelectorAll('#poll-options-input input');
   const options=Array.from(inputs).map(i=>i.value.trim()).filter(Boolean);
   if(!title){showToast('투표 제목을 입력해주세요','⚠️');return}
   if(options.length<2){showToast('선택지를 2개 이상 입력해주세요','⚠️');return}
   const polls=DB.get('polls');
-  polls.unshift({id:uid(),title,options:options.map(o=>({label:o,votes:0})),type:document.getElementById('poll-type').value,deadline:document.getElementById('poll-deadline').value,active:true,totalVotes:0,createdAt:Date.now()});
+  const newPoll = {
+    id:uid(),
+    title,
+    options:options.map(o=>({label:o,votes:0})),
+    type:document.getElementById('poll-type').value,
+    deadline:document.getElementById('poll-deadline').value,
+    active:true,
+    totalVotes:0,
+    createdAt:Date.now()
+  };
+  polls.unshift(newPoll);
+  if(fdbActive&&fdb){
+    fdb.collection('polls').doc(newPoll.id).set(newPoll).catch(console.error);
+  }
   DB.set('polls',polls);closeModal('modal-poll');
   document.getElementById('poll-title').value='';
   document.getElementById('poll-options-input').innerHTML='<input type="text" class="form-input" placeholder="선택지 1" style="margin-bottom:8px"><input type="text" class="form-input" placeholder="선택지 2">';
   showToast('투표가 시작되었습니다 🗳️');if(currentPage==='polls')renderPolls();refreshDashboard();
 }
 
-function vote(pollId,optIdx){
+async function vote(pollId,optIdx){
   const polls=DB.get('polls'),poll=polls.find(p=>p.id===pollId);
   if(!poll||!poll.active)return;
   const sk='voted_'+pollId;if(sessionStorage.getItem(sk)){showToast('이미 투표하셨습니다','⚠️');return}
   poll.options[optIdx].votes+=1;poll.totalVotes=(poll.totalVotes||0)+1;
+  if(fdbActive&&fdb){
+    fdb.collection('polls').doc(pollId).set(poll,{merge:true}).catch(console.error);
+  }
   DB.set('polls',polls);sessionStorage.setItem(sk,'1');showToast('투표가 완료되었습니다 🗳️');renderPolls();
 }
 
-function closePoll(id){const polls=DB.get('polls'),p=polls.find(p=>p.id===id);if(p)p.active=false;DB.set('polls',polls);renderPolls();showToast('투표가 마감되었습니다')}
-function deletePoll(id){if(!confirm('투표를 삭제하시겠습니까?'))return;DB.set('polls',DB.get('polls').filter(p=>p.id!==id));renderPolls();showToast('삭제되었습니다','🗑');refreshDashboard()}
+async function closePoll(id){
+  const polls=DB.get('polls'),p=polls.find(p=>p.id===id);
+  if(p){
+    p.active=false;
+    if(fdbActive&&fdb){
+      fdb.collection('polls').doc(id).set({active:false},{merge:true}).catch(console.error);
+    }
+  }
+  DB.set('polls',polls);renderPolls();showToast('투표가 마감되었습니다');
+}
+
+async function deletePoll(id){
+  if(!confirm('투표를 삭제하시겠습니까?'))return;
+  if(fdbActive&&fdb){
+    fdb.collection('polls').doc(id).delete().catch(console.error);
+  }
+  DB.set('polls',DB.get('polls').filter(p=>p.id!==id));renderPolls();showToast('삭제되었습니다','🗑');refreshDashboard();
+}
 
 function renderPolls(){
   const polls=DB.get('polls');const grid=document.getElementById('polls-grid');
@@ -1412,7 +1771,7 @@ function renderPolls(){
 }
 
 /* INIT */
-function init(){
+async function init(){
   initCalendar();
   const notices=DB.get('notices');
   if(notices.length===0){
@@ -1444,6 +1803,14 @@ function init(){
     DB.set('polls',[{id:uid(),title:'2026 하반기 연수 희망 주제를 선택해주세요',active:true,options:[{label:'교육과정 재구성 및 성취기준 분석',votes:4},{label:'AI·디지털 리터러시 교육 실습',votes:7},{label:'학생 상담 및 생활지도 기법',votes:3},{label:'교원 노동법 및 권리 이해',votes:5}],type:'single',deadline:fmtDate(new Date(Date.now()+7*86400000)),totalVotes:19,createdAt:Date.now()}]);
   }
   refreshDashboard();
+
+  // Try initializing Firebase
+  const config = getSavedFirebaseConfig();
+  if (config) {
+    await initFirebase(config);
+  } else {
+    updateSyncStatusUI('local');
+  }
 }
 init();
 </script>
