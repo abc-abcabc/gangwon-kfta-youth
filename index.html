@@ -159,10 +159,10 @@ ul{list-style:none}
 .modal-body{display:flex;flex-direction:column;gap:var(--space-base)}
 .modal-footer{display:flex;gap:var(--space-sm);justify-content:flex-end;margin-top:var(--space-lg)}
 
-/* Section header */
-.section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--space-lg);gap:var(--space-base);flex-wrap:wrap}
-.section-title{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-0.3px}
-.section-desc{font-size:14px;color:var(--muted);margin-top:4px}
+/* Page Toolbar */
+.page-toolbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);margin-bottom:var(--space-base);flex-wrap:wrap}
+.page-toolbar .filter-bar{margin-bottom:0}
+.page-toolbar .kanban-tabs{margin-bottom:0}
 
 /* Dashboard hero */
 .dashboard-hero{background:var(--surface-dark);border-radius:var(--rounded-2xl);padding:var(--space-xl) var(--space-xxl);margin-bottom:var(--space-xl);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:var(--space-xl);min-height:160px}
@@ -459,15 +459,13 @@ ul{list-style:none}
   .members-grid{grid-template-columns:1fr}
   .polls-grid{grid-template-columns:1fr}
   
-  /* Section Header on Mobile */
-  .section-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;width:100%;box-sizing:border-box;flex-wrap:nowrap}
-  .section-header > div:first-child{flex:1;min-width:0}
-  .section-title{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .section-desc{display:none}
-  .section-header .btn{padding:5px 10px;font-size:12px;height:30px;white-space:nowrap;flex-shrink:0;border-radius:var(--rounded-pill)}
-  .section-header .flex{display:flex;gap:4px;flex-shrink:0}
-  .filter-bar{display:flex;align-items:center;gap:6px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;flex-wrap:nowrap;width:100%}
+  /* Page Toolbar on Mobile */
+  .page-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;width:100%;box-sizing:border-box}
+  .page-toolbar .btn{padding:5px 12px;font-size:12px;height:32px;white-space:nowrap;flex-shrink:0;border-radius:var(--rounded-pill)}
+  .page-toolbar .flex{display:flex;gap:4px;flex-shrink:0}
+  .filter-bar{display:flex;align-items:center;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;flex-wrap:nowrap;margin-bottom:0}
   .filter-btn{flex-shrink:0;padding:5px 12px;font-size:12px}
+  .kanban-tabs{display:flex;margin-bottom:0}
   
   /* Mobile Notice Card */
   .notice-card{padding:12px 14px;gap:10px;border-radius:14px}
@@ -519,8 +517,7 @@ ul{list-style:none}
   .topbar{padding:0 8px;gap:4px}
   .topbar-title{font-size:13.5px}
   .sync-status-badge{padding:2px 6px;font-size:10px}
-  .section-title{font-size:14.5px}
-  .section-header .btn{padding:4px 8px;font-size:11px;height:28px}
+  .page-toolbar .btn{padding:4px 8px;font-size:11px;height:28px}
 }
 </style>
 </head>
@@ -603,19 +600,20 @@ ul{list-style:none}
 
       <!-- NOTICES -->
       <div class="page" id="page-notices">
-        <div class="section-header"><div><div class="section-title">공지사항 &amp; 게시판</div><div class="section-desc">위원회 소식을 공유하세요</div></div><button class="btn btn-primary" onclick="openNoticeModal()">📢 공지 작성</button></div>
-        <div class="filter-bar">
-          <button class="filter-btn active" onclick="filterNotices(this,'all')">전체</button>
-          <button class="filter-btn" onclick="filterNotices(this,'공지')">📌 공지</button>
-          <button class="filter-btn" onclick="filterNotices(this,'자유')">💬 자유</button>
-          <button class="filter-btn" onclick="filterNotices(this,'건의')">💡 건의</button>
+        <div class="page-toolbar">
+          <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterNotices(this,'all')">전체</button>
+            <button class="filter-btn" onclick="filterNotices(this,'공지')">📌 공지</button>
+            <button class="filter-btn" onclick="filterNotices(this,'자유')">💬 자유</button>
+            <button class="filter-btn" onclick="filterNotices(this,'건의')">💡 건의</button>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openNoticeModal()">📢 공지 작성</button>
         </div>
         <div class="notice-list" id="notice-list"></div>
       </div>
 
       <!-- CALENDAR -->
       <div class="page" id="page-calendar">
-        <div class="section-header"><div><div class="section-title">일정 &amp; 캘린더</div><div class="section-desc">회의 · 행사 · 연수 일정을 관리하세요</div></div><button class="btn btn-primary" onclick="openEventModal()">📅 일정 추가</button></div>
         <div class="calendar-layout">
           <div>
             <div class="calendar-nav">
@@ -623,12 +621,13 @@ ul{list-style:none}
               <div class="cal-month-title" id="cal-month-title"></div>
               <button class="btn btn-secondary btn-sm btn-icon" onclick="changeMonth(1)">▶</button>
               <button class="btn btn-ghost btn-sm" onclick="goToday()">오늘</button>
+              <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="openEventModal()">📅 일정 추가</button>
             </div>
             <div class="calendar-grid">
               <div class="calendar-weekdays">
-                <div class="cal-weekday" style="color:#dc2626">일</div>
+                <div class="cal-weekday sun">일</div>
                 <div class="cal-weekday">월</div><div class="cal-weekday">화</div><div class="cal-weekday">수</div><div class="cal-weekday">목</div><div class="cal-weekday">금</div>
-                <div class="cal-weekday" style="color:#1a56db">토</div>
+                <div class="cal-weekday sat">토</div>
               </div>
               <div class="calendar-days" id="calendar-days"></div>
             </div>
@@ -644,12 +643,14 @@ ul{list-style:none}
 
       <!-- KANBAN -->
       <div class="page" id="page-kanban">
-        <div class="section-header"><div><div class="section-title">프로젝트 &amp; 과제 관리</div><div class="section-desc">칸반 보드로 진행 상황을 추적하세요</div></div><button class="btn btn-primary" onclick="openTaskModal('todo')">✅ 과제 추가</button></div>
-        <div class="kanban-tabs" id="kanban-tabs">
-          <button class="kanban-tab-btn active" onclick="filterKanbanTab(this,'all')">전체 <span class="kanban-tab-count" id="tab-count-all">0</span></button>
-          <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'todo')">할 일 <span class="kanban-tab-count" id="tab-count-todo">0</span></button>
-          <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'progress')">진행 중 <span class="kanban-tab-count" id="tab-count-progress">0</span></button>
-          <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'done')">완료 <span class="kanban-tab-count" id="tab-count-done">0</span></button>
+        <div class="page-toolbar">
+          <div class="kanban-tabs" id="kanban-tabs">
+            <button class="kanban-tab-btn active" onclick="filterKanbanTab(this,'all')">전체 <span class="kanban-tab-count" id="tab-count-all">0</span></button>
+            <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'todo')">할 일 <span class="kanban-tab-count" id="tab-count-todo">0</span></button>
+            <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'progress')">진행 중 <span class="kanban-tab-count" id="tab-count-progress">0</span></button>
+            <button class="kanban-tab-btn" onclick="filterKanbanTab(this,'done')">완료 <span class="kanban-tab-count" id="tab-count-done">0</span></button>
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="openTaskModal('todo')">✅ 과제 추가</button>
         </div>
         <div class="kanban-board">
           <div class="kanban-col" id="kcol-todo">
@@ -672,7 +673,9 @@ ul{list-style:none}
 
       <!-- MEETINGS -->
       <div class="page" id="page-meetings">
-        <div class="section-header"><div><div class="section-title">회의록 &amp; 자료실</div><div class="section-desc">회의 내용과 주요 자료를 기록하세요</div></div><div class="flex gap-sm"><button class="btn btn-secondary" onclick="openDocModal()">📎 자료 추가</button><button class="btn btn-primary" onclick="openMeetingModal()">📝 회의록 작성</button></div></div>
+        <div class="page-toolbar" style="justify-content:flex-end">
+          <div class="flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="openDocModal()">📎 자료 추가</button><button class="btn btn-primary btn-sm" onclick="openMeetingModal()">📝 회의록 작성</button></div>
+        </div>
         <div class="meetings-layout">
           <div>
             <div style="margin-bottom:var(--space-sm);font-size:14px;font-weight:700;color:var(--ink)">회의록 목록</div>
@@ -686,7 +689,9 @@ ul{list-style:none}
 
       <!-- MEMBERS -->
       <div class="page" id="page-members">
-        <div class="section-header"><div><div class="section-title">멤버 &amp; 조직도</div><div class="section-desc">2030청년위원회 구성원을 소개합니다</div></div><button class="btn btn-primary" onclick="openMemberModal()">👤 멤버 추가</button></div>
+        <div class="page-toolbar" style="justify-content:flex-end">
+          <button class="btn btn-primary btn-sm" onclick="openMemberModal()">👤 멤버 추가</button>
+        </div>
         <div class="card mb-xl" id="org-chart-container"><div class="card-header"><div class="card-title">조직도</div></div><div id="org-chart-view"><div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">멤버를 추가하면 조직도가 표시됩니다</div></div></div></div>
         <div style="margin-bottom:12px;font-size:14px;font-weight:700;color:var(--ink)">전체 멤버</div>
         <div class="members-grid" id="members-grid"></div>
@@ -694,7 +699,9 @@ ul{list-style:none}
 
       <!-- POLLS -->
       <div class="page" id="page-polls">
-        <div class="section-header"><div><div class="section-title">투표 &amp; 설문</div><div class="section-desc">위원회 의견을 수렴하세요</div></div><button class="btn btn-primary" onclick="openPollModal()">🗳️ 투표 생성</button></div>
+        <div class="page-toolbar" style="justify-content:flex-end">
+          <button class="btn btn-primary btn-sm" onclick="openPollModal()">🗳️ 투표 생성</button>
+        </div>
         <div class="polls-grid" id="polls-grid"></div>
       </div>
 
