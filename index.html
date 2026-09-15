@@ -326,15 +326,24 @@ ul{list-style:none}
 .member-school{font-size:13px;color:var(--muted);margin-bottom:var(--space-sm)}
 .member-contact{font-size:13px;color:var(--body);display:flex;align-items:center;justify-content:center;gap:5px;margin-top:var(--space-xs)}
 .member-actions{display:flex;gap:var(--space-xs);justify-content:center;margin-top:var(--space-base);padding-top:var(--space-sm);border-top:1px solid var(--hairline-soft)}
-.org-chart{margin-bottom:var(--space-xl)}
-.org-level{display:flex;justify-content:center;gap:var(--space-base);margin-bottom:var(--space-lg);flex-wrap:wrap}
-.org-node{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--rounded-xl);padding:var(--space-sm) var(--space-lg);text-align:center;min-width:120px;transition:all var(--transition-fast);cursor:pointer}
-.org-node:hover{border-color:var(--primary);box-shadow:var(--shadow-card)}
-.org-node.leader{background:var(--primary);border-color:var(--primary);color:#fff}
-.org-node-name{font-size:14px;font-weight:700;color:var(--ink)}
-.org-node.leader .org-node-name{color:#fff}
-.org-node-role{font-size:11px;color:var(--muted);margin-top:2px}
-.org-node.leader .org-node-role{color:rgba(255,255,255,0.75)}
+/* Org Chart */
+.org-chart-container{margin-bottom:var(--space-xl)}
+.org-chart-view{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
+.org-level-section{width:100%;display:flex;flex-direction:column;align-items:center}
+.org-level-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--primary);background:var(--primary-light);padding:3px 12px;border-radius:var(--rounded-pill);margin-bottom:12px;letter-spacing:0.02em}
+.org-level{width:100%;display:grid;gap:12px}
+.org-level-leader{display:flex;justify-content:center;width:100%}
+.org-level-leader .org-node{width:100%;max-width:340px;background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(26,86,219,0.25);justify-content:center;text-align:center}
+.org-level-leader .org-node-name{color:#fff;font-size:15.5px}
+.org-level-leader .org-node-role{color:rgba(255,255,255,0.85);font-size:12px}
+.org-level-exec{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));max-width:800px}
+.org-level-members{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));width:100%}
+.org-node{background:var(--canvas);border:1.5px solid var(--hairline);border-radius:var(--rounded-xl);padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all var(--transition-fast);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+.org-node:hover{border-color:var(--primary);box-shadow:var(--shadow-card);transform:translateY(-2px)}
+.org-node-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.org-node-info{flex:1;min-width:0;text-align:left}
+.org-node-name{font-size:14px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org-node-role{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Polls */
 .polls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:var(--space-base)}
@@ -499,6 +508,14 @@ ul{list-style:none}
   .poll-option-label{font-size:13px;word-break:keep-all}
   .poll-option-pct{font-size:12px;white-space:nowrap}
   .poll-option-votes{font-size:11px;white-space:nowrap}
+
+  /* Mobile Org Chart Grid: Perfect 2-column Alignment */
+  .org-level-members, .org-level-exec{grid-template-columns:repeat(2,1fr);gap:8px;width:100%}
+  .org-node{padding:10px 8px;gap:8px;border-radius:12px}
+  .org-node-avatar{width:28px;height:28px;font-size:11.5px}
+  .org-node-name{font-size:13px}
+  .org-node-role{font-size:10.5px}
+  .org-level-leader .org-node{max-width:100%;padding:12px 10px}
 
   /* Mobile Bottom Sheet Modal */
   .modal-overlay{align-items:flex-end;padding:0}
@@ -1779,7 +1796,26 @@ function renderMembers(){
   const ro=['위원장','부위원장','총무','사무국장','위원'],gr={};
   members.forEach(m=>{const r=m.role||'위원';if(!gr[r])gr[r]=[];gr[r].push(m)});
   let oh='';
-  ro.forEach(role=>{if(!gr[role])return;oh+=`<div class="org-level">${gr[role].map(m=>`<div class="org-node${role==='위원장'?' leader':''}" onclick="editMember('${m.id}')" title="클릭하여 수정"><div class="org-node-name">${m.name}</div><div class="org-node-role">${role} · ${m.school||m.region||''}</div></div>`).join('')}</div>`});
+  ro.forEach(role=>{
+    if(!gr[role]||gr[role].length===0)return;
+    const isLeader=role==='위원장';
+    const isExec=role==='부위원장'||role==='총무'||role==='사무국장';
+    const levelClass=isLeader?'org-level-leader':(isExec?'org-level-exec':'org-level-members');
+    oh+=`<div class="org-level-section">
+      ${!isLeader?`<div class="org-level-badge">${role} (${gr[role].length}명)</div>`:''}
+      <div class="org-level ${levelClass}">
+        ${gr[role].map(m=>`
+          <div class="org-node ${isLeader?'leader':''}" onclick="editMember('${m.id}')" title="클릭하여 수정">
+            <div class="org-node-avatar" style="background:${m.color||(isLeader?'#ffffff':'#1a56db')};color:${isLeader?'#1a56db':'#ffffff'}">${initials(m.name)}</div>
+            <div class="org-node-info">
+              <div class="org-node-name">${m.name}</div>
+              <div class="org-node-role">${isLeader?'위원장 · ':''}${m.school||m.region||'2030청년위원회'}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  });
   document.getElementById('org-chart-view').innerHTML=oh||`<div class="empty-state" style="padding:16px 0"><div style="font-size:13px;color:var(--muted)">등록된 멤버가 없습니다</div></div>`;
 }
 
